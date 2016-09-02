@@ -1,0 +1,17 @@
+53f05dd1648de5793228d53211dcb399 *DESCRIPTION
+7af866c086ad1b644989860af1765d86 *NAMESPACE
+2b63d6028980fc8f032374f692e6e373 *NEWS.md
+5b9d6c16d394a57bf099784b311a25ac *R/plot.chisqtest.R
+61fd4c1a18191cdaf8b5df83dc15c439 *R/plot.ftest.R
+9eb1cdfcc56f356ea147f2556d4b7899 *R/plot.ttest.R
+cdd3d46916ac9e377cf87b028c87dc3b *R/plot.ztest.R
+6704fb925843fd7187177f35b3264096 *README.md
+716ac1f1b46cfb8892b5f82330788f11 *build/vignette.rds
+bf71efadab62989e2bca63a78242b356 *inst/doc/nhstplot.R
+e41a7f1c4b3e78b6ecd78367f64ab77b *inst/doc/nhstplot.Rmd
+da66c3f2501ead3c5c9c8c7f5bfe0590 *inst/doc/nhstplot.html
+82de2363403d6f97258723f82b0c55ca *man/plotchisqtest.Rd
+1bb433d942df501d977dbca041977c16 *man/plotftest.Rd
+2820333cc0a7276ce5a0eaf6c18e57b6 *man/plotttest.Rd
+0ba03a73236ca7789088847204bea619 *man/plotztest.Rd
+e41a7f1c4b3e78b6ecd78367f64ab77b *vignettes/nhstplot.Rmd
