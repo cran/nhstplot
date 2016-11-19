@@ -19,7 +19,7 @@ vignette: >
 
 # The basics
 
-First, you need to load the library for it to work, so:
+After installing the library with `install.packages("nhstplot")` you need to load the library:
 
 ```{r}
 library(nhstplot)

@@ -137,12 +137,11 @@ plotftest <- function(f, dfnum, dfdenom, blank = FALSE, title = "F Test", xlabel
         panel.grid.major = ggplot2::element_blank(),
         panel.grid.minor = ggplot2::element_blank(),
         panel.border = ggplot2::element_blank(),
-        axis.line = ggplot2::element_line(linetype = "solid"),
         axis.title = ggplot2::element_text(family = fontfamily),
         axis.text = ggplot2::element_text(family = fontfamily),
         axis.text.x = ggplot2::element_text(family = fontfamily),
         axis.text.y = ggplot2::element_text(family = fontfamily),
-        plot.title = ggplot2::element_text(family = fontfamily),
+        plot.title = ggplot2::element_text(family = fontfamily, hjust = .5),
         legend.text = ggplot2::element_text(family = fontfamily),
         legend.title = ggplot2::element_text(family = fontfamily))
 }

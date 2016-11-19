@@ -5,7 +5,7 @@
 \title{Illustrate a Chi-Squared Test graphically.}
 \usage{
 plotchisqtest(chisq, df, blank = FALSE, title = parse(text =
-  expression(chi^2 ~ "test")), xlabel = parse(text = expression(chi^2)),
+  expression(chi^2 ~ "Test")), xlabel = parse(text = expression(chi^2)),
   ylabel = "Density of probability\\nunder the null hypothesis",
   fontfamily = "serif", colorleft = "aliceblue",
   colorright = "firebrick3", colorleftcurve = "black",

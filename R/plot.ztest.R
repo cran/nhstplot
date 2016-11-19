@@ -154,7 +154,7 @@ plotztest <- function(z, tails = "two", blank = FALSE, title = "z Test", xlabel 
       #Right z label
       ggplot2::geom_label(ggplot2::aes(x_zlabel,-.05,label = zlabright), parse = T, colour=colorcut, fill = colorlabelfill, family=fontfamily) +
       #Add the title
-      ggplot2::ggtitle(title) +
+      ggplot2::ggtitle(label = title) +
       #Apply black and white ggplot theme to avoid grey background, etc.
       ggplot2::theme_bw() +
       #Remove gridlines and pass fontfamily argument to ggplot2
@@ -162,12 +162,11 @@ plotztest <- function(z, tails = "two", blank = FALSE, title = "z Test", xlabel 
         panel.grid.major = ggplot2::element_blank(),
         panel.grid.minor = ggplot2::element_blank(),
         panel.border = ggplot2::element_blank(),
-        axis.line = ggplot2::element_line(linetype = "solid"),
         axis.title = ggplot2::element_text(family = fontfamily),
         axis.text = ggplot2::element_text(family = fontfamily),
         axis.text.x = ggplot2::element_text(family = fontfamily),
         axis.text.y = ggplot2::element_text(family = fontfamily),
-        plot.title = ggplot2::element_text(family = fontfamily),
+        plot.title = ggplot2::element_text(family = fontfamily, hjust = .5),
         legend.text = ggplot2::element_text(family = fontfamily),
         legend.title = ggplot2::element_text(family = fontfamily))
 
@@ -196,7 +195,7 @@ plotztest <- function(z, tails = "two", blank = FALSE, title = "z Test", xlabel 
         #Right z label
         ggplot2::geom_label(ggplot2::aes(x_zlabel,-.05,label = zlab), parse = T, fill = colorlabelfill, colour=colorcut, family=fontfamily) +
         #Add the title
-        ggplot2::ggtitle(title) +
+        ggplot2::ggtitle(label = title) +
         #Apply black and white ggplot theme to avoid grey background, etc.
         ggplot2::theme_bw() +
         #Remove gridlines and pass fontfamily argument to ggplot2
@@ -204,12 +203,11 @@ plotztest <- function(z, tails = "two", blank = FALSE, title = "z Test", xlabel 
           panel.grid.major = ggplot2::element_blank(),
           panel.grid.minor = ggplot2::element_blank(),
           panel.border = ggplot2::element_blank(),
-          axis.line = ggplot2::element_line(linetype = "solid"),
           axis.title = ggplot2::element_text(family = fontfamily),
           axis.text = ggplot2::element_text(family = fontfamily),
           axis.text.x = ggplot2::element_text(family = fontfamily),
           axis.text.y = ggplot2::element_text(family = fontfamily),
-          plot.title = ggplot2::element_text(family = fontfamily),
+          plot.title = ggplot2::element_text(family = fontfamily, hjust = .5),
           legend.text = ggplot2::element_text(family = fontfamily),
           legend.title = ggplot2::element_text(family = fontfamily))
     } else {
@@ -234,7 +232,7 @@ plotztest <- function(z, tails = "two", blank = FALSE, title = "z Test", xlabel 
         #Left z label
         ggplot2::geom_label(ggplot2::aes(-x_zlabel,-.05,label = zlab, vjust = 0), fill = colorlabelfill, colour=colorcut, parse = T, family=fontfamily) +
         #Add the title
-        ggplot2::ggtitle(title) +
+        ggplot2::ggtitle(label = title) +
         #Apply black and white ggplot theme to avoid grey background, etc.
         ggplot2::theme_bw() +
         #Remove gridlines and pass fontfamily argument to ggplot2
@@ -242,12 +240,11 @@ plotztest <- function(z, tails = "two", blank = FALSE, title = "z Test", xlabel 
           panel.grid.major = ggplot2::element_blank(),
           panel.grid.minor = ggplot2::element_blank(),
           panel.border = ggplot2::element_blank(),
-          axis.line = ggplot2::element_line(linetype = "solid"),
           axis.title = ggplot2::element_text(family = fontfamily),
           axis.text = ggplot2::element_text(family = fontfamily),
           axis.text.x = ggplot2::element_text(family = fontfamily),
           axis.text.y = ggplot2::element_text(family = fontfamily),
-          plot.title = ggplot2::element_text(family = fontfamily),
+          plot.title = ggplot2::element_text(family = fontfamily, hjust = .5),
           legend.text = ggplot2::element_text(family = fontfamily),
           legend.title = ggplot2::element_text(family = fontfamily))
     }

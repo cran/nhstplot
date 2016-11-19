@@ -45,7 +45,7 @@
 #' plotchisqtest(chisq = 8, df = 4, title = expression(chi^2 ~ "Test" ~ "of" ~ "Independence"))
 #'
 #' @author Nils Myszkowski <nmyszkowski@pace.edu>
-plotchisqtest <- function(chisq, df, blank = FALSE, title = parse(text = expression(chi^2 ~ "test")), xlabel = parse(text = expression(chi^2)), ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colorleft = "aliceblue", colorright = "firebrick3", colorleftcurve = "black", colorrightcurve = "black", colorcut = "black", colorplabel = colorright, theme = "default", signifdigitsp = 3, signifdigitschisq = 3, curvelinesize = .4, cutlinesize = curvelinesize) {
+plotchisqtest <- function(chisq, df, blank = FALSE, title = parse(text = expression(chi^2 ~ "Test")), xlabel = parse(text = expression(chi^2)), ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colorleft = "aliceblue", colorright = "firebrick3", colorleftcurve = "black", colorrightcurve = "black", colorcut = "black", colorplabel = colorright, theme = "default", signifdigitsp = 3, signifdigitschisq = 3, curvelinesize = .4, cutlinesize = curvelinesize) {
   x=NULL
   #Create a function to restrict plotting areas to specific bounds of x
     area_range <- function(fun, min, max) {
@@ -96,6 +96,10 @@ plotchisqtest <- function(chisq, df, blank = FALSE, title = parse(text = express
     colorleft <- "seagreen"
     colorright <- "firebrick3"
     colorplabel <- "firebrick3"
+  } else if (theme == "goldandblue") {
+    colorleft <- "#FFC61E"
+    colorright <- "#00337F"
+    colorplabel <- "#00337F"
   } else warning("The ",'"', "theme", '"', " argument was not recognized. See documentation for a list of available color themes. Reverting to default.")
   #To make some colors transparent when `blank` parameter is TRUE (to only plot de probability density function in that case)
   if (blank == TRUE) {
@@ -136,12 +140,11 @@ plotchisqtest <- function(chisq, df, blank = FALSE, title = parse(text = express
        panel.grid.major = ggplot2::element_blank(),
        panel.grid.minor = ggplot2::element_blank(),
        panel.border = ggplot2::element_blank(),
-       axis.line = ggplot2::element_line(linetype = "solid"),
        axis.title = ggplot2::element_text(family = fontfamily),
        axis.text = ggplot2::element_text(family = fontfamily),
        axis.text.x = ggplot2::element_text(family = fontfamily),
        axis.text.y = ggplot2::element_text(family = fontfamily),
-       plot.title = ggplot2::element_text(family = fontfamily),
+       plot.title = ggplot2::element_text(family = fontfamily, hjust = .5),
        legend.text = ggplot2::element_text(family = fontfamily),
        legend.title = ggplot2::element_text(family = fontfamily))
 }
