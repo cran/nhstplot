@@ -1,26 +1,27 @@
-#' Illustrate a Fisher's F Test graphically.
+#' Illustrate an F Test graphically.
 #'
 #' This function plots the density probability distribution of an F statistic, with a vertical cutline at the observed F value specified. A p-value and the observed F value are plotted. Although largely customizable, only three arguments are required (the observed F and the degrees of freedom).
 #'
-#' @param f A numeric value indicating the observed F statistic.
-#' @param dfnum A numeric value indicating the degrees of freedom of the numerator.
-#' @param dfdenom A numeric value indicating the degrees of freedom of the denominator.
-#' @param blank A logical that indicates whether to hide (blank = TRUE) the test statistic value, p value and cutline. The corresponding colors are actually only made transparent when blank = TRUE, so that the output is scaled exactly the same (this is useful and especially intended for step-by-step explanations).
-#' @param title A string or expression indicating a custom title for the plot (optional).
-#' @param xlabel A string or expression indicating a custom title for the x axis (optional).
-#' @param ylabel A string or expression indicating a custom title for the y axis (optional).
-#' @param fontfamily A string indicating the font family of all the titles and labels (e.g. "serif" (default), "sans", "Helvetica", "Palatino", etc.) (optional).
-#' @param colorleft A string indicating the color for the "left" area under the curve (optional).
-#' @param colorright A string indicating the color for the "right" area under the curve (optional).
-#' @param colorleftcurve A string indicating the color for the "left" part of the curve (optional).
-#' @param colorrightcurve A string indicating the color for the "right" part of the curve (optional). By default, for color consistency, this color is also passed to the label, but this can be changed by providing an argument for the "colorlabel" parameter.
-#' @param colorcut A string indicating the color for the cut line at the observed test statistic (optional).
-#' @param colorplabel A string indicating the color for the label of the p-value (optional). By default, for color consistency, this color is the same as color of "colorright".
-#' @param theme A string indicating one of the predefined color themes. The themes are "default" (light blue and red), "blackandwhite", "whiteandred", "blueandred", "greenandred" and "goldandblue") (optional). Supersedes "colorleft" and "colorright" if another argument than "default" is provided.
-#' @param signifdigitsp A numeric indicating the number of desired significant figures reported for the p-value label (optional).
+#' @param f A numeric value indicating the observed F statistic. Alternatively, you can pass an object of class \code{lm} created by the function \code{lm()}.
+#' @param dfnum A numeric value indicating the degrees of freedom of the numerator. This argument is optional if you are using an \code{lm} object as the \code{f} argument.
+#' @param dfdenom A numeric value indicating the degrees of freedom of the denominator. This argument is optional if you are using an \code{lm} object as the \code{f} argument.
+#' @param blank A logical that indicates whether to hide (\code{blank = TRUE}) the test statistic value, p value and cutline. The corresponding colors are actually only made transparent when \code{blank = TRUE}, so that the output is scaled exactly the same (this is useful and especially intended for step-by-step explanations).
+#' @param xmax A numeric including the maximum for the x-axis. Defaults to \code{"auto"}, which scales the plot automatically (optional).
+#' @param title A character or expression indicating a custom title for the plot (optional).
+#' @param xlabel A character or expression indicating a custom title for the x axis (optional).
+#' @param ylabel A character or expression indicating a custom title for the y axis (optional).
+#' @param fontfamily A character indicating the font family of all the titles and labels (e.g. \code{"serif"} (default), \code{"sans"}, \code{"Helvetica"}, \code{"Palatino"}, etc.) (optional).
+#' @param colorleft A character indicating the color for the "left" area under the curve (optional).
+#' @param colorright A character indicating the color for the "right" area under the curve (optional).
+#' @param colorleftcurve A character indicating the color for the "left" part of the curve (optional).
+#' @param colorrightcurve A character indicating the color for the "right" part of the curve (optional). By default, for color consistency, this color is also passed to the label, but this can be changed by providing an argument for the \code{colorlabel} parameter.
+#' @param colorcut A character indicating the color for the cut line at the observed test statistic (optional).
+#' @param colorplabel A character indicating the color for the label of the p-value (optional). By default, for color consistency, this color is the same as color of \code{colorright}.
+#' @param theme A character indicating one of the predefined color themes. The themes are \code{"default"} (light blue and red), \code{"blackandwhite"}, \code{"whiteandred"}, \code{"blueandred"}, \code{"greenandred"} and \code{"goldandblue"}) (optional). Supersedes \code{colorleft} and \code{colorright} if another argument than \code{"default"} is provided.
 #' @param signifdigitsf A numeric indicating the number of desired significant figures reported for the F (optional).
 #' @param curvelinesize A numeric indicating the size of the curve line (optional).
 #' @param cutlinesize A numeric indicating the size of the cut line (optional). By default, the size of the curve line is used.
+#' @return A plot with the density of probability of F under the null hypothesis, annotated with the observed test statistic and the p-value.
 #' @export plotftest
 #' @examples
 #' #Making an F plot with an F of 3, and degrees of freedom of 1 and 5.
@@ -32,18 +33,36 @@
 #' #The same plot without the f or p value
 #' plotftest(4,3,5, blank = TRUE)
 #'
-#' #Changing the fontfamily to "sans" and changing the color theme to "blackandwhite"
-#' plotftest(f = 4, dfnum = 3, dfdenom = 5, fontfamily = "sans", theme = "blackandwhite")
-#'
-#' #Using specific colors and changing the curve line size
-#' plotftest(4, 3, 5, colorleft = "grey", colorright = "indianred", curvelinesize = 1.2)
-#'
-#' #Changing the title to "Fisher's F test"
-#' plotftest(f = 4, dfnum = 3, dfdenom = 5, title = "Fisher's F test")
+#' #Passing an "lm" object
+#' x <- rnorm(10) ; y <- x + rnorm(10)
+#' fit <- lm(y ~ x)
+#' plotftest(fit)
+#' plotftest(summary(fit)) # also works
 #'
 #' @author Nils Myszkowski <nmyszkowski@pace.edu>
-plotftest <- function(f, dfnum, dfdenom, blank = FALSE, title = "F Test", xlabel = "F", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colorleft = "aliceblue", colorright = "firebrick3", colorleftcurve = "black", colorrightcurve = "black", colorcut = "black", colorplabel = colorright, theme = "default", signifdigitsp = 3, signifdigitsf = 3, curvelinesize = .4, cutlinesize = curvelinesize) {
+plotftest <- function(f, dfnum = f$fstatistic[2], dfdenom = f$fstatistic[3], blank = FALSE, xmax = "auto", title = "F Test", xlabel = "F", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colorleft = "aliceblue", colorright = "firebrick3", colorleftcurve = "black", colorrightcurve = "black", colorcut = "black", colorplabel = colorright, theme = "default", signifdigitsf = 3, curvelinesize = .4, cutlinesize = curvelinesize) {
   x=NULL
+
+
+  # If f is a "summary.lm" object, take values from it
+  if (class(f) == "summary.lm") {
+    dfnum <- f$fstatistic[2]
+    dfdenom <- f$fstatistic[3]
+    f <- f$fstatistic[1]
+  }
+
+  # If f is a "lm" object, take values from it
+  if (class(f) == "lm") {
+    dfnum <- summary(f)$fstatistic[2]
+    dfdenom <- summary(f)$fstatistic[3]
+    f <- summary(f)$fstatistic[1]
+  }
+
+  #Unname inputs (can cause issues)
+  f <- unname(f)
+  dfnum <- unname(dfnum)
+  dfdenom <- unname(dfdenom)
+
   #Create a function to restrict plotting areas to specific bounds of x
   area_range <- function(fun, min, max) {
     function(x) {
@@ -52,14 +71,24 @@ plotftest <- function(f, dfnum, dfdenom, blank = FALSE, title = "F Test", xlabel
       return(y)
     }
   }
+
+  # Function to format p value
+  p_value_format <- function(p) {
+    if (p < .001) {"< .001"} else
+      if (p > .999) {"> .999"} else
+        paste0("= ", substr(sprintf("%.3f", p), 2, 5))
+  }
+
   #Calculate the p value
   pvalue <- stats::pf(q = f, df1 = dfnum, df2 = dfdenom, lower.tail = FALSE)
   #Label for p value
-  plab <- paste("p =", signif(pvalue, digits = signifdigitsp), sep = " ")
+  plab <- paste0("p ", p_value_format(pvalue))
   #Label for F value
   flab <- paste("F =", signif(f, digits = signifdigitsf), sep = " ")
   #Define x axis bounds as the maximum between 1.5*f or 3 (this avoids only the tip of the curve to be plotted when F is small, and keeps a nice t curve shape display)
-  xbound <- max(1.5*f, 3)
+  if (xmax == "auto") {
+    xbound <- max(1.5*f, 3)
+  } else {xbound <- xmax}
   #To ensure lines plotted by stat_function are smooth
   precisionfactor <-  5000
   #To define the function to plot in stat_function

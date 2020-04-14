@@ -2,59 +2,71 @@
 % Please edit documentation in R/plot.chisqtest.R
 \name{plotchisqtest}
 \alias{plotchisqtest}
-\title{Illustrate a Chi-Squared Test graphically.}
+\title{Illustrate a \eqn{\chi^2}{\chi-squared} test graphically.}
 \usage{
-plotchisqtest(chisq, df, blank = FALSE, title = parse(text =
-  expression(chi^2 ~ "Test")), xlabel = parse(text = expression(chi^2)),
+plotchisqtest(
+  chisq,
+  df = chisq$parameter,
+  blank = FALSE,
+  xmax = "auto",
+  title = parse(text = expression(chi^2 ~ "Test")),
+  xlabel = parse(text = expression(chi^2)),
   ylabel = "Density of probability\\nunder the null hypothesis",
-  fontfamily = "serif", colorleft = "aliceblue",
-  colorright = "firebrick3", colorleftcurve = "black",
-  colorrightcurve = "black", colorcut = "black", colorplabel = colorright,
-  theme = "default", signifdigitsp = 3, signifdigitschisq = 3,
-  curvelinesize = 0.4, cutlinesize = curvelinesize)
+  fontfamily = "serif",
+  colorleft = "aliceblue",
+  colorright = "firebrick3",
+  colorleftcurve = "black",
+  colorrightcurve = "black",
+  colorcut = "black",
+  colorplabel = colorright,
+  theme = "default",
+  signifdigitschisq = 3,
+  curvelinesize = 0.4,
+  cutlinesize = curvelinesize
+)
 }
 \arguments{
-\item{chisq}{A numeric value indicating the observed Chi-squared statistic.}
+\item{chisq}{A numeric value indicating the observed \eqn{\chi^2}{\chi-squared} statistic. Alternatively, you can use an object of class \code{htest} created by the function \code{chisq.test()}.}
 
-\item{df}{A numeric value indicating the degrees of freedom.}
+\item{df}{A numeric value indicating the degrees of freedom. This argument is optional if you are using an \code{htest} object as the \code{chisq} argument.}
 
-\item{blank}{A logical that indicates whether to hide (blank = TRUE) the test statistic value, p value and cutline. The corresponding colors are actually only made transparent when blank = TRUE, so that the output is scaled exactly the same (this is useful and especially intended for step-by-step explanations).}
+\item{blank}{A logical that indicates whether to hide (\code{blank = TRUE}) the test statistic value, p value and cutline. The corresponding colors are actually only made transparent when \code{blank = TRUE}, so that the output is scaled exactly the same (this is useful and especially intended for step-by-step explanations).}
 
-\item{title}{A string or expression indicating a custom title for the plot (optional).}
+\item{xmax}{A numeric including the maximum for the x-axis. Defaults to \code{"auto"}, which scales the plot automatically (optional).}
 
-\item{xlabel}{A string or expression indicating a custom title for the x axis (optional).}
+\item{title}{A character or expression indicating a custom title for the plot (optional).}
 
-\item{ylabel}{A string or expression indicating a custom title for the y axis (optional).}
+\item{xlabel}{A character or expression indicating a custom title for the x axis (optional).}
 
-\item{fontfamily}{A string indicating the font family of all the titles and labels (e.g. "serif" (default), "sans", "Helvetica", "Palatino", etc.) (optional).}
+\item{ylabel}{A character or expression indicating a custom title for the y axis (optional).}
 
-\item{colorleft}{A string indicating the color for the "left" area under the curve (optional).}
+\item{fontfamily}{A character indicating the font family of all the titles and labels (e.g. \code{"serif"} (default), \code{"sans"}, \code{"Helvetica"}, \code{"Palatino"}, etc.) (optional).}
 
-\item{colorright}{A string indicating the color for the "right" area under the curve (optional).}
+\item{colorleft}{A character indicating the color for the "left" area under the curve (optional).}
 
-\item{colorleftcurve}{A string indicating the color for the "left" part of the curve (optional).}
+\item{colorright}{A character indicating the color for the "right" area under the curve (optional).}
 
-\item{colorrightcurve}{A string indicating the color for the "right" part of the curve (optional). By default, for color consistency, this color is also passed to the label, but this can be changed by providing an argument for the "colorlabel" parameter.}
+\item{colorleftcurve}{A character indicating the color for the "left" part of the curve (optional).}
 
-\item{colorcut}{A string indicating the color for the cut line at the observed test statistic (optional).}
+\item{colorrightcurve}{A character indicating the color for the "right" part of the curve (optional). By default, for color consistency, this color is also passed to the label, but this can be changed by providing an argument for the \code{colorlabel} parameter.}
 
-\item{colorplabel}{A string indicating the color for the label of the p-value (optional). By default, for color consistency, this color is the same as color of "colorright".}
+\item{colorcut}{A character indicating the color for the cut line at the observed test statistic (optional).}
 
-\item{theme}{A string indicating one of the predefined color themes. The themes are "default" (light blue and red), "blackandwhite", "whiteandred", "blueandred", "greenandred" and "goldandblue") (optional). Supersedes "colorleft" and "colorright" if another argument than "default" is provided.}
+\item{colorplabel}{A character indicating the color for the label of the p-value (optional). By default, for color consistency, this color is the same as color of \code{colorright}.}
 
-\item{signifdigitsp}{A numeric indicating the number of desired significant figures reported for the p-value label (optional).}
+\item{theme}{A character indicating one of the predefined color themes. The themes are \code{"default"} (light blue and red), \code{"blackandwhite"}, \code{"whiteandred"}, \code{"blueandred"}, \code{"greenandred"} and \code{"goldandblue"}) (optional). Supersedes \code{colorleft} and \code{colorright} if another argument than \code{"default"} is provided.}
 
-\item{signifdigitschisq}{A numeric indicating the number of desired significant figures reported for the Chi-Squared label (optional).}
+\item{signifdigitschisq}{A numeric indicating the number of desired significant figures reported for the \eqn{\chi^2}{\chi-squared} label (optional).}
 
 \item{curvelinesize}{A numeric indicating the size of the curve line (optional).}
 
 \item{cutlinesize}{A numeric indicating the size of the cut line (optional). By default, the size of the curve line is used.}
 }
 \value{
-Returns a plot with the density of probability of Chi-Squared under the null hypothesis, annotated with the observed test statistic and the p-value.
+A plot with the density of probability of \eqn{\chi^2}{\chi-squared} under the null hypothesis, annotated with the observed test statistic and the p-value.
 }
 \description{
-This function plots the density probability distribution of a Chi-Squared statistic, with a vertical cutline at the observed Chi-Squared value specified. The p-value and the observed Chi-Squared value are plotted. Although largely customizable, only two arguments are required (the observed Chi-Squared and the degrees of freedom).
+This function plots the density probability distribution of a \eqn{\chi^2}{\chi-squared} statistic, with a vertical cutline at the observed \eqn{\chi^2}{\chi-squared} value specified. The p-value and the observed \eqn{\chi^2}{\chi-squared} value are plotted. Although largely customizable, only two arguments are required (the observed \eqn{\chi^2}{\chi-squared} and the degrees of freedom).
 }
 \examples{
 #Making a chi-squared plot with Chi-squared of 8 and df of 4
@@ -66,20 +78,11 @@ plotchisqtest(8,4)
 #The same plot without the Chi-Squared or p value
 plotchisqtest(8,4, blank = TRUE)
 
-#Changing the fontfamily to "sans" and changing the color theme to "blackandwhite"
-plotchisqtest(chisq = 8, df = 4, fontfamily = "sans", theme = "blackandwhite")
-
-#Using specific colors and changing the curve line size
-plotchisqtest(chisq = 8, df = 4, colorleft = "grey", colorright = "indianred", curvelinesize = 1.2)
-
-#Changing the title to "Chi-Squared Test of Independence"
-plotchisqtest(chisq = 8, df = 4, title = "Chi-Squared Test of Independence")
-
-#Changing the title to "Chi-Squared Test of Independence" with greek chi-squared
-plotchisqtest(chisq = 8, df = 4, title = expression(chi^2 ~ "Test" ~ "of" ~ "Independence"))
+#Plot using a chisq.test()
+test <- chisq.test(c(A = 37, B = 18, C = 25))
+plotchisqtest(test)
 
 }
 \author{
 Nils Myszkowski <nmyszkowski@pace.edu>
 }
-

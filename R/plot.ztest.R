@@ -1,22 +1,22 @@
 #' Illustrate a one- or two-tailed z test graphically.
 #'
-#' This function plots the density probability distribution of a z statistic, with appropriate vertical cutlines at the z value. The p-value and the observed z value are plotted. Although largely customizable, only one argument is required (the observed z statistic) for a two-tailed z test. The optional argument tails = "one" plots a one-tailed test plot (the tail is on the left or right, depending on the sign of the z statistic).
+#' This function plots the density probability distribution of a z statistic, with appropriate vertical cutlines at the z value. The p-value and the observed z value are plotted. Although largely customizable, only one argument is required (the observed z statistic) for a two-tailed z test. The optional argument \code{tails = "one"} plots a one-tailed test plot (the tail is on the left or right, depending on the sign of the z statistic).
 #'
 #' @param z A numeric value indicating the observed t statistic.
-#' @param tails A string that indicates whether to plot a one ("one") or two ("two") tailed z-test (optional). By default, a two-tailed test is plotted.
-#' @param blank A logical that indicates whether to hide (blank = TRUE) the test statistic value, p value and cutline. The corresponding colors are actually only made transparent when blank = TRUE, so that the output is scaled exactly the same (this is useful and especially intended for step-by-step explanations).
-#' @param title A string or expression indicating a custom title for the plot (optional).
-#' @param xlabel A string or expression indicating a custom title for the x axis (optional).
-#' @param ylabel A string or expression indicating a custom title for the y axis (optional).
-#' @param fontfamily A string indicating the font family of all the titles and labels (e.g. "serif" (default), "sans", "Helvetica", "Palatino", etc.) (optional).
-#' @param colormiddle A string indicating the color for the "middle" area under the curve (optional).
-#' @param colorsides A string indicating the color for the "side(s)" area(s) under the curve (optional).
-#' @param colormiddlecurve A string indicating the color for the "middle" part of the curve (optional).
-#' @param colorsidescurve A string indicating the color for the "side(s)" part of the curve (optional).
-#' @param colorcut A string indicating the color for the cut line at the observed test statistic (optional).
-#' @param colorplabel A string indicating the color for the label of the p-value (optional). By default, for color consistency, this color is the same as color of "colorright".
-#' @param theme A string indicating one of the predefined color themes. The themes are "default" (light blue and red), "blackandwhite", "whiteandred", "blueandred", "greenandred" and "goldandblue") (optional). Supersedes "colormiddle" and "colorsides" if another argument than "default" is provided.
-#' @param signifdigitsp A numeric indicating the number of desired significant figures reported for the p-value label (optional).
+#' @param tails A character that indicates whether to plot a one (\code{"one"}) or two (\code{"two"}) tailed z-test (optional). By default, a two-tailed test is plotted.
+#' @param blank A logical that indicates whether to hide (\code{blank = TRUE}) the test statistic value, p value and cutline. The corresponding colors are actually only made transparent when \code{blank = TRUE}, so that the output is scaled exactly the same (this is useful and especially intended for step-by-step explanations).
+#' @param xmax A numeric including the maximum for the x-axis. Defaults to \code{"auto"}, which scales the plot automatically (optional).
+#' @param title A character or expression indicating a custom title for the plot (optional).
+#' @param xlabel A character or expression indicating a custom title for the x axis (optional).
+#' @param ylabel A character or expression indicating a custom title for the y axis (optional).
+#' @param fontfamily A character indicating the font family of all the titles and labels (e.g. \code{"serif"} (default), \code{"sans"}, \code{"Helvetica"}, \code{"Palatino"}, etc.) (optional).
+#' @param colormiddle A character indicating the color for the "middle" area under the curve (optional).
+#' @param colorsides A character indicating the color for the "side(s)" area(s) under the curve (optional).
+#' @param colormiddlecurve A character indicating the color for the "middle" part of the curve (optional).
+#' @param colorsidescurve A character indicating the color for the "side(s)" part of the curve (optional).
+#' @param colorcut A character indicating the color for the cut line at the observed test statistic (optional).
+#' @param colorplabel A character indicating the color for the label of the p-value (optional). By default, for color consistency, this color is the same as color of \code{colorright}.
+#' @param theme A character indicating one of the predefined color themes. The themes are \code{"default"} (light blue and red), \code{"blackandwhite"}, \code{"whiteandred"}, \code{"blueandred"}, \code{"greenandred"} and \code{"goldandblue"}) (optional). Supersedes \code{colormiddle} and \code{colorsides} if another argument than \code{"default"} is provided.
 #' @param signifdigitsz A numeric indicating the number of desired significant figures reported for the z label (optional).
 #' @param curvelinesize A numeric indicating the size of the curve line (optional).
 #' @param cutlinesize A numeric indicating the size of the cut line(s) (optional). By default, the size of the curve line is used.
@@ -34,19 +34,14 @@
 #' #Plotting a one-tailed test using the "tails" parameter.
 #' plotztest(z = 2, tails = "one")
 #'
-#' #If a negative t is provided, the tail is on the left.
-#' plotztest(z = -2, tails = "one")
-#'
-#' #Changing the fontfamily to "sans" and changing the color theme to "blackandwhite"
-#' plotztest(z = 2, fontfamily = "sans", theme = "blackandwhite")
-#'
-#' #Using specific colors and changing the curve line size
-#' plotztest(z = 2, colormiddle = "grey96", colorsides = "indianred", curvelinesize=1)
-#'
 #' @author Nils Myszkowski <nmyszkowski@pace.edu>
 #' @export plotztest
-plotztest <- function(z, tails = "two", blank = FALSE, title = "z Test", xlabel = "z", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colormiddle = "aliceblue", colorsides = "firebrick3", colormiddlecurve = "black", colorsidescurve = "black", colorcut = "black", colorplabel = colorsides, theme = "default", signifdigitsp = 3, signifdigitsz = 3, curvelinesize = .4, cutlinesize = curvelinesize) {
+plotztest <- function(z, tails = "two", blank = FALSE, xmax = "auto", title = "z Test", xlabel = "z", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colormiddle = "aliceblue", colorsides = "firebrick3", colormiddlecurve = "black", colorsidescurve = "black", colorcut = "black", colorplabel = colorsides, theme = "default", signifdigitsz = 3, curvelinesize = .4, cutlinesize = curvelinesize) {
   x=NULL
+
+  #Unname inputs (can cause issues)
+  z <- unname(z)
+
   #Create a function to restrict plotting areas to specific bounds of x
   area_range <- function(fun, min, max) {
     function(x) {
@@ -55,6 +50,14 @@ plotztest <- function(z, tails = "two", blank = FALSE, title = "z Test", xlabel 
       return(y)
     }
   }
+
+  # Function to format p value
+  p_value_format <- function(p) {
+    if (p < .001) {"< .001"} else
+      if (p > .999) {"> .999"} else
+        paste0("= ", substr(sprintf("%.3f", p), 2, 5))
+    }
+
   #Store the z value provided as argument, used only for one tailed tests, to decide whether to plot left tailed or right tailed
   originalz <- z
   #Use the absolute value of the t provided for the graph
@@ -62,16 +65,18 @@ plotztest <- function(z, tails = "two", blank = FALSE, title = "z Test", xlabel 
   #Calculate the p value
   pvalue <- stats::pnorm(z, mean = 0, sd = 1, lower.tail = FALSE)*2
   #Label for half the p value (two tailed)
-  phalflab <- as.character(as.expression(bquote(frac(p,2) == .(signif(pvalue/2, digits=signifdigitsp)))))
+  phalflab <- as.character(as.expression(bquote(frac(p,2)~.(p_value_format(pvalue/2)))))
   #Label for p value (one tailed)
-  plab <- as.character(as.expression(bquote(p == .(signif(pvalue/2, digits=signifdigitsp)))))
+  plab <- as.character(as.expression(bquote(p~.(p_value_format(pvalue/2)))))
   #Labels for z value and - z value (two tailed)
   zlableft <- as.character(as.expression(bquote(- group("|",z,"|") == .(signif(-z, digits=signifdigitsz)))))
   zlabright <- as.character(as.expression(bquote( + group("|",z,"|") == .(signif(z, digits=signifdigitsz)))))
   #Label for z value (one tailed)
   zlab <- as.character(as.expression(bquote(z == .(signif(originalz, digits=signifdigitsz)))))
   #Define x axis bounds as the maximum between t*3 or 3 (this avoids only the tip of the curve to be plotted when t is small, and keeps a nice t curve shape display)
-  xbound <- max(3*z, 2)
+  if (xmax == "auto") {
+    xbound <- max(3*z, 2)
+  } else {xbound <- xmax}
   #To ensure lines plotted by stat_function are smooth
   precisionfactor <-  5000
   #To define the function to plot in stat_function

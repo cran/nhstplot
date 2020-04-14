@@ -2,55 +2,71 @@
 % Please edit documentation in R/plot.ftest.R
 \name{plotftest}
 \alias{plotftest}
-\title{Illustrate a Fisher's F Test graphically.}
+\title{Illustrate an F Test graphically.}
 \usage{
-plotftest(f, dfnum, dfdenom, blank = FALSE, title = "F Test",
+plotftest(
+  f,
+  dfnum = f$fstatistic[2],
+  dfdenom = f$fstatistic[3],
+  blank = FALSE,
+  xmax = "auto",
+  title = "F Test",
   xlabel = "F",
   ylabel = "Density of probability\\nunder the null hypothesis",
-  fontfamily = "serif", colorleft = "aliceblue",
-  colorright = "firebrick3", colorleftcurve = "black",
-  colorrightcurve = "black", colorcut = "black", colorplabel = colorright,
-  theme = "default", signifdigitsp = 3, signifdigitsf = 3,
-  curvelinesize = 0.4, cutlinesize = curvelinesize)
+  fontfamily = "serif",
+  colorleft = "aliceblue",
+  colorright = "firebrick3",
+  colorleftcurve = "black",
+  colorrightcurve = "black",
+  colorcut = "black",
+  colorplabel = colorright,
+  theme = "default",
+  signifdigitsf = 3,
+  curvelinesize = 0.4,
+  cutlinesize = curvelinesize
+)
 }
 \arguments{
-\item{f}{A numeric value indicating the observed F statistic.}
+\item{f}{A numeric value indicating the observed F statistic. Alternatively, you can pass an object of class \code{lm} created by the function \code{lm()}.}
 
-\item{dfnum}{A numeric value indicating the degrees of freedom of the numerator.}
+\item{dfnum}{A numeric value indicating the degrees of freedom of the numerator. This argument is optional if you are using an \code{lm} object as the \code{f} argument.}
 
-\item{dfdenom}{A numeric value indicating the degrees of freedom of the denominator.}
+\item{dfdenom}{A numeric value indicating the degrees of freedom of the denominator. This argument is optional if you are using an \code{lm} object as the \code{f} argument.}
 
-\item{blank}{A logical that indicates whether to hide (blank = TRUE) the test statistic value, p value and cutline. The corresponding colors are actually only made transparent when blank = TRUE, so that the output is scaled exactly the same (this is useful and especially intended for step-by-step explanations).}
+\item{blank}{A logical that indicates whether to hide (\code{blank = TRUE}) the test statistic value, p value and cutline. The corresponding colors are actually only made transparent when \code{blank = TRUE}, so that the output is scaled exactly the same (this is useful and especially intended for step-by-step explanations).}
 
-\item{title}{A string or expression indicating a custom title for the plot (optional).}
+\item{xmax}{A numeric including the maximum for the x-axis. Defaults to \code{"auto"}, which scales the plot automatically (optional).}
 
-\item{xlabel}{A string or expression indicating a custom title for the x axis (optional).}
+\item{title}{A character or expression indicating a custom title for the plot (optional).}
 
-\item{ylabel}{A string or expression indicating a custom title for the y axis (optional).}
+\item{xlabel}{A character or expression indicating a custom title for the x axis (optional).}
 
-\item{fontfamily}{A string indicating the font family of all the titles and labels (e.g. "serif" (default), "sans", "Helvetica", "Palatino", etc.) (optional).}
+\item{ylabel}{A character or expression indicating a custom title for the y axis (optional).}
 
-\item{colorleft}{A string indicating the color for the "left" area under the curve (optional).}
+\item{fontfamily}{A character indicating the font family of all the titles and labels (e.g. \code{"serif"} (default), \code{"sans"}, \code{"Helvetica"}, \code{"Palatino"}, etc.) (optional).}
 
-\item{colorright}{A string indicating the color for the "right" area under the curve (optional).}
+\item{colorleft}{A character indicating the color for the "left" area under the curve (optional).}
 
-\item{colorleftcurve}{A string indicating the color for the "left" part of the curve (optional).}
+\item{colorright}{A character indicating the color for the "right" area under the curve (optional).}
 
-\item{colorrightcurve}{A string indicating the color for the "right" part of the curve (optional). By default, for color consistency, this color is also passed to the label, but this can be changed by providing an argument for the "colorlabel" parameter.}
+\item{colorleftcurve}{A character indicating the color for the "left" part of the curve (optional).}
 
-\item{colorcut}{A string indicating the color for the cut line at the observed test statistic (optional).}
+\item{colorrightcurve}{A character indicating the color for the "right" part of the curve (optional). By default, for color consistency, this color is also passed to the label, but this can be changed by providing an argument for the \code{colorlabel} parameter.}
 
-\item{colorplabel}{A string indicating the color for the label of the p-value (optional). By default, for color consistency, this color is the same as color of "colorright".}
+\item{colorcut}{A character indicating the color for the cut line at the observed test statistic (optional).}
 
-\item{theme}{A string indicating one of the predefined color themes. The themes are "default" (light blue and red), "blackandwhite", "whiteandred", "blueandred", "greenandred" and "goldandblue") (optional). Supersedes "colorleft" and "colorright" if another argument than "default" is provided.}
+\item{colorplabel}{A character indicating the color for the label of the p-value (optional). By default, for color consistency, this color is the same as color of \code{colorright}.}
 
-\item{signifdigitsp}{A numeric indicating the number of desired significant figures reported for the p-value label (optional).}
+\item{theme}{A character indicating one of the predefined color themes. The themes are \code{"default"} (light blue and red), \code{"blackandwhite"}, \code{"whiteandred"}, \code{"blueandred"}, \code{"greenandred"} and \code{"goldandblue"}) (optional). Supersedes \code{colorleft} and \code{colorright} if another argument than \code{"default"} is provided.}
 
 \item{signifdigitsf}{A numeric indicating the number of desired significant figures reported for the F (optional).}
 
 \item{curvelinesize}{A numeric indicating the size of the curve line (optional).}
 
 \item{cutlinesize}{A numeric indicating the size of the cut line (optional). By default, the size of the curve line is used.}
+}
+\value{
+A plot with the density of probability of F under the null hypothesis, annotated with the observed test statistic and the p-value.
 }
 \description{
 This function plots the density probability distribution of an F statistic, with a vertical cutline at the observed F value specified. A p-value and the observed F value are plotted. Although largely customizable, only three arguments are required (the observed F and the degrees of freedom).
@@ -65,17 +81,13 @@ plotftest(4,3,5)
 #The same plot without the f or p value
 plotftest(4,3,5, blank = TRUE)
 
-#Changing the fontfamily to "sans" and changing the color theme to "blackandwhite"
-plotftest(f = 4, dfnum = 3, dfdenom = 5, fontfamily = "sans", theme = "blackandwhite")
-
-#Using specific colors and changing the curve line size
-plotftest(4, 3, 5, colorleft = "grey", colorright = "indianred", curvelinesize = 1.2)
-
-#Changing the title to "Fisher's F test"
-plotftest(f = 4, dfnum = 3, dfdenom = 5, title = "Fisher's F test")
+#Passing an "lm" object
+x <- rnorm(10) ; y <- x + rnorm(10)
+fit <- lm(y ~ x)
+plotftest(fit)
+plotftest(summary(fit)) # also works
 
 }
 \author{
 Nils Myszkowski <nmyszkowski@pace.edu>
 }
-

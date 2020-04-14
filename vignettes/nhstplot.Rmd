@@ -46,6 +46,13 @@ plotchisqtest(chisq = 8, df = 4)
 
 Note that the same is achieved with `plotchisqtest(8,4)`.
 
+You can also use the function by passing an object created by `chisq.test()`...
+
+```{r}
+test <- chisq.test(c(A = 37, B = 18, C = 25))
+plotchisqtest(test)
+```
+
 ## $F$ tests
 
 The `plotftest` function only requires 3 arguments : The first one is the $F$ value (parameter : `f`), and the second and third ones are respectively the degrees of freedom of the numerator (parameter `dfnum`) and the denominator (parameter `dfdenom`).
@@ -57,6 +64,15 @@ plotftest(f = 4, dfnum = 3, dfdenom = 5)
 ```
 
 Note that the same is achieved with `plotftest(4,3,5)`.
+
+You can also use the function by passing an object created by `lm()`...
+
+```{r}
+x <- rnorm(10) ; y <- x + rnorm(10)
+fit <- lm(y ~ x)
+plotftest(fit)
+```
+
 
 ## $t$ tests
 
@@ -81,6 +97,21 @@ The left or right tail is automatically selected using the sign of provided $t$:
 plotttest(-2, 10, tails = "one")
 ```
 
+You can also use the function by passing an object created by `t.test()`...
+
+```{r}
+test <- t.test(rnorm(10), rnorm(10))
+plotttest(test)
+```
+
+...or `cor.test()`.
+
+```{r}
+test <- cor.test(rnorm(10), rnorm(10))
+plotttest(test)
+```
+
+
 ## $z$ tests
 
 The `plotztest` function only requires 1 argument : The $z$ value (parameter `z`).
@@ -104,6 +135,9 @@ The left or right tail is automatically selected using the sign of provided $t$:
 plotztest(-2, tails = "one")
 ```
 
+
+
+
 # Customizing the output
 
 ## Blanking the plot
@@ -117,6 +151,20 @@ plotztest(-2, blank = TRUE)
 ```
 
 In reality, when `blank = TRUE`, every thing is plotted the same way as with `blank = FALSE` (default), but some objects are simply make transparent. This means that the two plots are scaled exactly the same way, which can be useful to plot one version after another, for example in slides of a presentation or in an animated gif.
+
+
+## Changing the x-axis limits
+
+The argument `xmax` can be used to manually provide a maximum for the x-axis. For symmetrical distributions ($t$ and $z$), the minimum is set automatically, so only one value (the maximum) should be provided.
+
+```{r}
+plotztest(2, xmax = 10)
+```
+
+
+
+
+
 
 ## Color themes
 
@@ -155,6 +203,9 @@ The font family of all the text in the graph can be changed using the `fontfamil
 plotztest(2, fontfamily = "Helvetica")
 ```
 
+- Note that the package `extrafonts` can be used to provide your own fonts (e.g. to match your slides font), and appears to work well with `nhstplot`. Fonts loaded through `extrafonts` can be called in the `fontfamily` argument in the `nhstplot` functions (e.g., `plotztest(2, fontfamily = "Roboto")`).
+
+
 ## Line size
 
 The `cutlinesize`and the `curvelinesize` control the size of the line sizes. By default, the `cutlinesize`is the same as the `curvelinesize`.
@@ -165,8 +216,8 @@ plotztest(2, cutlinesize = 2, curvelinesize = 1)
 
 ## Digits
 
-The number of significant digits can be modified in all functions using `signifdigitsp` for the $p$ value, and `signifdigitschisq` / `signifdigitsf` / `signifdigitst` / `signifdigitsz` for the test statistic. The default is `3` for all.
+The number of significant digits can be modified in all functions using `signifdigitschisq` / `signifdigitsf` / `signifdigitst` / `signifdigitsz` for the test statistic. The default is `3` for all.
 
 ```{r}
-plotztest(2.134553, signifdigitsp = 2, signifdigitsz = 2)
+plotztest(2.134553, signifdigitsz = 2)
 ```

@@ -2,49 +2,62 @@
 % Please edit documentation in R/plot.ttest.R
 \name{plotttest}
 \alias{plotttest}
-\title{Illustrate a one- or two-tailed Student's t test graphically.}
+\title{Illustrate a one- or two-tailed t test graphically.}
 \usage{
-plotttest(t, df, tails = "two", blank = FALSE, title = "t Test",
+plotttest(
+  t,
+  df = t$parameter,
+  tails = "two",
+  blank = FALSE,
+  xmax = "auto",
+  title = "t Test",
   xlabel = "t",
   ylabel = "Density of probability\\nunder the null hypothesis",
-  fontfamily = "serif", colormiddle = "aliceblue",
-  colorsides = "firebrick3", colormiddlecurve = "black",
-  colorsidescurve = "black", colorcut = "black", colorplabel = colorsides,
-  theme = "default", signifdigitsp = 3, signifdigitst = 3,
-  curvelinesize = 0.4, cutlinesize = curvelinesize)
+  fontfamily = "serif",
+  colormiddle = "aliceblue",
+  colorsides = "firebrick3",
+  colormiddlecurve = "black",
+  colorsidescurve = "black",
+  colorcut = "black",
+  colorplabel = colorsides,
+  theme = "default",
+  signifdigitst = 3,
+  curvelinesize = 0.4,
+  cutlinesize = curvelinesize
+)
 }
 \arguments{
-\item{t}{A numeric value indicating the observed t statistic.}
+\item{t}{A numeric value indicating the observed t statistic. Alternatively, you can pass an object of class \code{htest} created by the function \code{t.test()} or \code{cor.test()}.}
 
-\item{df}{A numeric value indicating the degrees of freedom.}
+\item{df}{A numeric value indicating the degrees of freedom. This argument is optional if you are using an \code{htest} object as the \code{t} argument.}
 
-\item{tails}{A string that indicates whether to plot a one ("one") or two ("two") tailed t-test (optional). By default, a two-tailed test is plotted.}
+\item{tails}{A character that indicates whether to plot a one (\code{"one"}) or two (\code{"two"}) tailed t-test (optional). By default, a two-tailed test is plotted.}
 
-\item{blank}{A logical that indicates whether to hide (blank = TRUE) the test statistic value, p value and cutline. The corresponding colors are actually only made transparent when blank = TRUE, so that the output is scaled exactly the same (this is useful and especially intended for step-by-step explanations).}
+\item{blank}{A logical that indicates whether to hide (\code{blank = TRUE}) the test statistic value, p value and cutline. The corresponding colors are actually only made transparent when \code{blank = TRUE}, so that the output is scaled exactly the same (this is useful and especially intended for step-by-step explanations).}
 
-\item{title}{A string or expression indicating a custom title for the plot (optional).}
+\item{xmax}{A numeric including the maximum for the x-axis. Defaults to \code{"auto"}, which scales the plot automatically (optional).}
 
-\item{xlabel}{A string or expression indicating a custom title for the x axis (optional).}
+\item{title}{A character or expression indicating a custom title for the plot (optional).}
 
-\item{ylabel}{A string or expression indicating a custom title for the y axis (optional).}
+\item{xlabel}{A character or expression indicating a custom title for the x axis (optional).}
 
-\item{fontfamily}{A string indicating the font family of all the titles and labels (e.g. "serif" (default), "sans", "Helvetica", "Palatino", etc.) (optional).}
+\item{ylabel}{A character or expression indicating a custom title for the y axis (optional).}
 
-\item{colormiddle}{A string indicating the color for the "middle" area under the curve (optional).}
+\item{fontfamily}{A character indicating the font family of all the titles and labels (e.g. \code{"serif"} (default), \code{"sans"}, \code{"Helvetica"}, \code{"Palatino"}, etc.) (optional).}
 
-\item{colorsides}{A string indicating the color for the "side(s)" area(s) under the curve (optional).}
+\item{colormiddle}{A character indicating the color for the "middle" area under the curve (optional).}
 
-\item{colormiddlecurve}{A string indicating the color for the "middle" part of the curve (optional).}
+\item{colorsides}{A character indicating the color for the "side(s)" area(s) under the curve (optional).}
 
-\item{colorsidescurve}{A string indicating the color for the "side(s)" part of the curve (optional).}
+\item{colormiddlecurve}{A character indicating the color for the "middle" part of the curve (optional).}
 
-\item{colorcut}{A string indicating the color for the cut line at the observed test statistic (optional).}
+\item{colorsidescurve}{A character indicating the color for the "side(s)" part of the curve (optional).}
 
-\item{colorplabel}{A string indicating the color for the label of the p-value (optional). By default, for color consistency, this color is the same as color of "colorright".}
+\item{colorcut}{A character indicating the color for the cut line at the observed test statistic (optional).}
 
-\item{theme}{A string indicating one of the predefined color themes. The themes are "default" (light blue and red), "blackandwhite", "whiteandred", "blueandred", "greenandred" and "goldandblue") (optional). Supersedes "colormiddle" and "colorsides" if another argument than "default" is provided.}
+\item{colorplabel}{A character indicating the color for the label of the p-value (optional). By default, for color consistency, this color is the same as color of \code{colorright}.}
 
-\item{signifdigitsp}{A numeric indicating the number of desired significant figures reported for the p-value label (optional).}
+\item{theme}{A character indicating one of the predefined color themes. The themes are \code{"default"} (light blue and red), \code{"blackandwhite"}, \code{"whiteandred"}, \code{"blueandred"}, \code{"greenandred"} and \code{"goldandblue"}) (optional). Supersedes \code{colormiddle} and \code{colorsides} if another argument than \code{"default"} is provided.}
 
 \item{signifdigitst}{A numeric indicating the number of desired significant figures reported for the t label (optional).}
 
@@ -53,10 +66,10 @@ plotttest(t, df, tails = "two", blank = FALSE, title = "t Test",
 \item{cutlinesize}{A numeric indicating the size of the cut line(s) (optional). By default, the size of the curve line is used.}
 }
 \value{
-Returns a plot with the density of probability of t under the null hypothesis, annotated with the observed test statistic and the p-value.
+A plot with the density of probability of t under the null hypothesis, annotated with the observed test statistic and the p-value.
 }
 \description{
-This function plots the density probability distribution of a Student's t statistic, with appropriate vertical cutlines at the t value. The p-value and the observed t value are plotted. Although largely customizable, only two arguments are required (the observed t statistic and the degrees of freedom) for a two-tailed t test. The optional argument tails = "one" plots a one-tailed test plot (the tail is on the left or right, depending on the sign of the t statistic).
+This function plots the density probability distribution of a Student's (or Welch's) t statistic, with appropriate vertical cutlines at the t value. The p-value and the observed t value are plotted. Although largely customizable, only two arguments are required (the observed t statistic and the degrees of freedom) for a two-tailed t test. The optional argument \code{tails = "one"} plots a one-tailed test plot (the tail is on the left or right, depending on the sign of the t statistic).
 }
 \examples{
 #Making a t test plot with a t value of 2 and df of 10
@@ -71,17 +84,15 @@ plotttest(2,10, blank = TRUE)
 #Plotting a one-tailed test using the "tails" parameter.
 plotttest(t = 2, df = 10, tails = "one")
 
-#If a negative t is provided, the tail is on the left.
-plotttest(t = -2, df = 10, tails = "one")
+#Using t.test() as an input
+test <- t.test(rnorm(10), rnorm(10))
+plotttest(test)
 
-#Changing the fontfamily to "sans" and changing the color theme to "blackandwhite".
-plotttest(t = 2, df = 10, fontfamily = "sans", theme = "blackandwhite")
-
-#Using specific colors and changing the curve line size
-plotttest(t = 2, df = 10, colormiddle = "grey96", colorsides = "indianred", curvelinesize=1)
+#Using cor.test() as an input
+test <- cor.test(rnorm(10), rnorm(10))
+plotttest(test)
 
 }
 \author{
 Nils Myszkowski <nmyszkowski@pace.edu>
 }
-
