@@ -36,15 +36,30 @@
 #' test <- chisq.test(c(A = 37, B = 18, C = 25))
 #' plotchisqtest(test)
 #'
+#' #Plot from anova() model comparison
+#' set.seed(1)
+#' y <- rbinom(10, 1, .4) ; x <- 2*y + rnorm(10)
+#' fit1 <- glm(y ~ 1, family = binomial)
+#' fit2 <- glm(y ~ x, family = binomial)
+#' comp <- anova(fit1, fit2, test = "Chisq")
+#' plotchisqtest(comp)
+#'
 #' @author Nils Myszkowski <nmyszkowski@pace.edu>
 plotchisqtest <- function(chisq, df = chisq$parameter, blank = FALSE, xmax = "auto", title = parse(text = expression(chi^2 ~ "Test")), xlabel = parse(text = expression(chi^2)), ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colorleft = "aliceblue", colorright = "firebrick3", colorleftcurve = "black", colorrightcurve = "black", colorcut = "black", colorplabel = colorright, theme = "default", signifdigitschisq = 3, curvelinesize = .4, cutlinesize = curvelinesize) {
   x=NULL
 
 
-  # If t is a t.test() object, then mine it to get t and df
-  if (class(chisq) == "htest") {
+
+  # If chisq is a t.test() object, then mine it to get t and df
+  if ("htest" %in% class(chisq)) {
     df <- chisq$parameter
     chisq <- chisq$statistic
+  }
+
+  # If chisq is an anova() object, take values from it
+  if ("anova" %in% class(chisq)) {
+    df <- chisq$Df[2]
+    chisq <- chisq$Deviance[2]
   }
 
   #Unname inputs (can cause issues)
@@ -137,13 +152,13 @@ plotchisqtest <- function(chisq, df = chisq$parameter, blank = FALSE, xmax = "au
      #Right side area
      ggplot2::stat_function(fun = area_range(density, chisq, xbound), geom="area", fill=colorright, n=precisionfactor) +
      #Left side curve
-     ggplot2::stat_function(fun = density, xlim = c(0,chisq), colour = colorleftcurve, n=precisionfactor, size=curvelinesize) +
+     ggplot2::stat_function(fun = density, xlim = c(0,chisq), colour = colorleftcurve, n=precisionfactor, linewidth=curvelinesize) +
      #Right side curve
-     ggplot2::stat_function(fun = density, xlim = c(chisq,xbound), colour = colorrightcurve,size=curvelinesize) +
+     ggplot2::stat_function(fun = density, xlim = c(chisq,xbound), colour = colorrightcurve,linewidth=curvelinesize) +
      #Define plotting area for extraspace (proportional to the max y plotted) below the graph to place chisquared label
      ggplot2::coord_cartesian(xlim=c(0,xbound),ylim=c(maxdensity*(-.08), maxdensity)) +
      #Cut line
-     ggplot2::geom_vline(xintercept = chisq, colour = colorcut, size = cutlinesize) +
+     ggplot2::geom_vline(xintercept = chisq, colour = colorcut, linewidth = cutlinesize) +
      #p label
      ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = plab), fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
      #Chi squared label

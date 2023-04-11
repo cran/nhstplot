@@ -82,10 +82,19 @@ plotftest(4,3,5)
 plotftest(4,3,5, blank = TRUE)
 
 #Passing an "lm" object
+set.seed(1)
 x <- rnorm(10) ; y <- x + rnorm(10)
 fit <- lm(y ~ x)
 plotftest(fit)
 plotftest(summary(fit)) # also works
+
+#Passing an "anova" F-change test
+set.seed(1)
+x <- rnorm(10) ; y <- x + rnorm(10)
+fit1 <- lm(y ~ x)
+fit2 <- lm(y ~ poly(x, 2))
+comp <- anova(fit1, fit2)
+plotftest(comp)
 
 }
 \author{

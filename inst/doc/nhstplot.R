@@ -9,12 +9,28 @@ test <- chisq.test(c(A = 37, B = 18, C = 25))
 plotchisqtest(test)
 
 ## -----------------------------------------------------------------------------
+set.seed(1)
+y <- rbinom(10, 1, .4) ; x <- 2*y + rnorm(10)
+fit1 <- glm(y ~ 1, family = binomial)
+fit2 <- glm(y ~ x, family = binomial)
+comp <- anova(fit1, fit2, test = "Chisq")
+plotchisqtest(comp)
+
+## -----------------------------------------------------------------------------
 plotftest(f = 4, dfnum = 3, dfdenom = 5)
 
 ## -----------------------------------------------------------------------------
 x <- rnorm(10) ; y <- x + rnorm(10)
 fit <- lm(y ~ x)
 plotftest(fit)
+
+## -----------------------------------------------------------------------------
+set.seed(1)
+x <- rnorm(10) ; y <- x + rnorm(10)
+fit1 <- lm(y ~ x)
+fit2 <- lm(y ~ poly(x, 2))
+comp <- anova(fit1, fit2)
+plotftest(comp)
 
 ## -----------------------------------------------------------------------------
 plotttest(t = 2, df = 10)

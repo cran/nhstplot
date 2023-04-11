@@ -34,50 +34,72 @@
 #' plotftest(4,3,5, blank = TRUE)
 #'
 #' #Passing an "lm" object
+#' set.seed(1)
 #' x <- rnorm(10) ; y <- x + rnorm(10)
 #' fit <- lm(y ~ x)
 #' plotftest(fit)
 #' plotftest(summary(fit)) # also works
+#'
+#' #Passing an "anova" F-change test
+#' set.seed(1)
+#' x <- rnorm(10) ; y <- x + rnorm(10)
+#' fit1 <- lm(y ~ x)
+#' fit2 <- lm(y ~ poly(x, 2))
+#' comp <- anova(fit1, fit2)
+#' plotftest(comp)
 #'
 #' @author Nils Myszkowski <nmyszkowski@pace.edu>
 plotftest <- function(f, dfnum = f$fstatistic[2], dfdenom = f$fstatistic[3], blank = FALSE, xmax = "auto", title = "F Test", xlabel = "F", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colorleft = "aliceblue", colorright = "firebrick3", colorleftcurve = "black", colorrightcurve = "black", colorcut = "black", colorplabel = colorright, theme = "default", signifdigitsf = 3, curvelinesize = .4, cutlinesize = curvelinesize) {
   x=NULL
 
 
-  # If f is a "summary.lm" object, take values from it
-  if (class(f) == "summary.lm") {
-    dfnum <- f$fstatistic[2]
-    dfdenom <- f$fstatistic[3]
-    f <- f$fstatistic[1]
-  }
 
-  # If f is a "lm" object, take values from it
-  if (class(f) == "lm") {
-    dfnum <- summary(f)$fstatistic[2]
-    dfdenom <- summary(f)$fstatistic[3]
-    f <- summary(f)$fstatistic[1]
-  }
+# If f is an anova() object, take values from it
+if ("anova" %in% class(f)) {
+  dfnum <- f$Df[2]
+  dfdenom <- f$Res.Df[2]
+  f <- f$F[2]
+}
 
-  #Unname inputs (can cause issues)
-  f <- unname(f)
-  dfnum <- unname(dfnum)
-  dfdenom <- unname(dfdenom)
 
-  #Create a function to restrict plotting areas to specific bounds of x
-  area_range <- function(fun, min, max) {
-    function(x) {
-      y <- fun(x)
-      y[x < min | x > max] <- NA
-      return(y)
-    }
-  }
+# If f is a "summary.lm" object, take values from it
+if ("summary.lm" %in% class(f)) {
+  dfnum <- f$fstatistic[2]
+  dfdenom <- f$fstatistic[3]
+  f <- f$fstatistic[1]
+}
 
-  # Function to format p value
-  p_value_format <- function(p) {
-    if (p < .001) {"< .001"} else
-      if (p > .999) {"> .999"} else
-        paste0("= ", substr(sprintf("%.3f", p), 2, 5))
+# If f is a "lm" object, take values from it
+if ("lm" %in% class(f)) {
+  dfnum <- summary(f)$fstatistic[2]
+  dfdenom <- summary(f)$fstatistic[3]
+  f <- summary(f)$fstatistic[1]
+}
+
+# Unname inputs (can cause issues)
+f <- unname(f)
+dfnum <- unname(dfnum)
+dfdenom <- unname(dfdenom)
+
+# Create a function to restrict plotting areas to specific bounds of x
+area_range <- function(fun, min, max) {
+  function(x) {
+    y <- fun(x)
+    y[x < min | x > max] <- NA
+    return(y)
   }
+}
+
+# Function to format p value
+p_value_format <- function(p) {
+  if (p < .001) {
+    "< .001"
+  } else if (p > .999) {
+    "> .999"
+  } else {
+    paste0("= ", substr(sprintf("%.3f", p), 2, 5))
+  }
+}
 
   #Calculate the p value
   pvalue <- stats::pf(q = f, df1 = dfnum, df2 = dfdenom, lower.tail = FALSE)
@@ -144,13 +166,13 @@ plotftest <- function(f, dfnum = f$fstatistic[2], dfdenom = f$fstatistic[3], bla
     #Right side area
     ggplot2::stat_function(fun = area_range(density, f, xbound), geom="area", fill=colorright, n=precisionfactor) +
     #Right side curve
-    ggplot2::stat_function(fun = density, xlim = c(f,xbound), colour = colorrightcurve,size=curvelinesize) +
+    ggplot2::stat_function(fun = density, xlim = c(f,xbound), colour = colorrightcurve,linewidth=curvelinesize, ) +
     #Left side curve
-    ggplot2::stat_function(fun = density, xlim = c(0,f), colour = colorleftcurve, n=1000, size=curvelinesize) +
+    ggplot2::stat_function(fun = density, xlim = c(0,f), colour = colorleftcurve, n=1000, linewidth=curvelinesize) +
     #Define plotting area for extraspace (proportional to the max y plotted) below the graph to place f label
     ggplot2::coord_cartesian(xlim=c(0,xbound),ylim=c(maxdensity*(-.08), maxdensity)) +
     #Cut line
-    ggplot2::geom_vline(xintercept = f*1, colour = colorcut, size = cutlinesize) +
+    ggplot2::geom_vline(xintercept = f*1, colour = colorcut, linewidth = cutlinesize) +
     #p label
     ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = plab), colour=colorplabel, fill = colorlabelfill, family=fontfamily) +
     #f label

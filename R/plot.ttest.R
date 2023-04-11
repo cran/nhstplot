@@ -51,7 +51,7 @@ plotttest <- function(t, df = t$parameter, tails = "two", blank = FALSE, xmax = 
 
 
   # If t is a t.test() object, then mine it to get t and df
-  if (class(t) == "htest") {
+  if ("htest" %in% class(t)) {
     df <- t$parameter
     if (t$alternative != "two.sided") {tails = "one"} else {tails = "two"}
     t <- t$statistic
@@ -158,17 +158,17 @@ plotttest <- function(t, df = t$parameter, tails = "two", blank = FALSE, xmax = 
           #Left side area
           ggplot2::stat_function(fun = area_range(density, -xbound, -t), geom="area", fill=colorsides, n=precisionfactor) +
           #Left side curve
-          ggplot2::stat_function(fun = density, xlim = c(-xbound,-t), colour = colorsidescurve,size=curvelinesize,n=precisionfactor) +
+          ggplot2::stat_function(fun = density, xlim = c(-xbound,-t), colour = colorsidescurve,linewidth=curvelinesize,n=precisionfactor) +
           #Right side curve
-          ggplot2::stat_function(fun = density, xlim = c(t,xbound), colour = colorsidescurve,size=curvelinesize,n=precisionfactor) +
+          ggplot2::stat_function(fun = density, xlim = c(t,xbound), colour = colorsidescurve,linewidth=curvelinesize,n=precisionfactor) +
           #middle curve
-          ggplot2::stat_function(fun = density, xlim = c(-t,t), colour = colormiddlecurve, n=precisionfactor, size=curvelinesize) +
+          ggplot2::stat_function(fun = density, xlim = c(-t,t), colour = colormiddlecurve, n=precisionfactor, linewidth=curvelinesize) +
           #Define plotting area for extraspace below the graph to place t label
           ggplot2::coord_cartesian(xlim=c(-xbound,xbound),ylim=c(-.05, maxdensity)) +
           #Left cut line
-          ggplot2::geom_vline(xintercept = -t, colour = colorcut, size = cutlinesize) +
+          ggplot2::geom_vline(xintercept = -t, colour = colorcut, linewidth = cutlinesize) +
           #Right cut line
-          ggplot2::geom_vline(xintercept = t, colour = colorcut, size = cutlinesize) +
+          ggplot2::geom_vline(xintercept = t, colour = colorcut, linewidth = cutlinesize) +
           #Left p label
           ggplot2::geom_label(ggplot2::aes(-x_plabel,y_plabel,label = phalflab), parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
           #Right p label

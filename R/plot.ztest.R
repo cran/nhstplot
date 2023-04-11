@@ -137,19 +137,19 @@ plotztest <- function(z, tails = "two", blank = FALSE, xmax = "auto", title = "z
       #Right side area
       ggplot2::stat_function(fun = area_range(density, z, xbound), geom="area", fill=colorsides, n=precisionfactor) +
       #Middle curve
-      ggplot2::stat_function(fun = density, xlim = c(-z,z), colour = colormiddlecurve, n=precisionfactor, size=curvelinesize) +
+      ggplot2::stat_function(fun = density, xlim = c(-z,z), colour = colormiddlecurve, n=precisionfactor, linewidth=curvelinesize) +
       #Left side curve
-      ggplot2::stat_function(fun = density, xlim = c(-xbound,-z), colour = colorsidescurve,size=curvelinesize,n=precisionfactor) +
+      ggplot2::stat_function(fun = density, xlim = c(-xbound,-z), colour = colorsidescurve,linewidth=curvelinesize,n=precisionfactor) +
       #Right side curve
-      ggplot2::stat_function(fun = density, xlim = c(z,xbound), colour = colorsidescurve,size=curvelinesize,n=precisionfactor) +
+      ggplot2::stat_function(fun = density, xlim = c(z,xbound), colour = colorsidescurve,linewidth=curvelinesize,n=precisionfactor) +
       #Axis labels
       ggplot2::labs(x=xlabel,y=ylabel, size=10) +
       #Define plotting area for extraspace below the graph to place t label
       ggplot2::coord_cartesian(xlim=c(-xbound,xbound),ylim=c(-.05, maxdensity)) +
       #Left cut line
-      ggplot2::geom_vline(xintercept = -z, colour = colorcut, size = cutlinesize) +
+      ggplot2::geom_vline(xintercept = -z, colour = colorcut, linewidth = cutlinesize) +
       #Right cut line
-      ggplot2::geom_vline(xintercept = z, colour = colorcut, size = cutlinesize) +
+      ggplot2::geom_vline(xintercept = z, colour = colorcut, linewidth = cutlinesize) +
       #Left p label
       ggplot2::geom_label(ggplot2::aes(-x_plabel,y_plabel,label = phalflab), parse = T, colour=colorplabel, fill = colorlabelfill, family = fontfamily) +
       #Right p label
@@ -186,9 +186,9 @@ plotztest <- function(z, tails = "two", blank = FALSE, xmax = "auto", title = "z
         #Right side area
         ggplot2::stat_function(fun = area_range(density, z, xbound), geom="area", fill=colorsides, n=precisionfactor) +
         #Left and middle curve
-        ggplot2::stat_function(fun = density, xlim = c(-xbound,z), colour = colormiddlecurve,size=curvelinesize,n=precisionfactor) +
+        ggplot2::stat_function(fun = density, xlim = c(-xbound,z), colour = colormiddlecurve,linewidth=curvelinesize,n=precisionfactor) +
         #Right side curve
-        ggplot2::stat_function(fun = density, xlim = c(z,xbound), colour = colorsidescurve,size=curvelinesize,n=precisionfactor) +
+        ggplot2::stat_function(fun = density, xlim = c(z,xbound), colour = colorsidescurve,linewidth=curvelinesize,n=precisionfactor) +
         #Axis labels
         ggplot2::labs(x=xlabel,y=ylabel, size=10) +
         #Define plotting area for extraspace below the graph to place z label

@@ -82,6 +82,14 @@ plotchisqtest(8,4, blank = TRUE)
 test <- chisq.test(c(A = 37, B = 18, C = 25))
 plotchisqtest(test)
 
+#Plot from anova() model comparison
+set.seed(1)
+y <- rbinom(10, 1, .4) ; x <- 2*y + rnorm(10)
+fit1 <- glm(y ~ 1, family = binomial)
+fit2 <- glm(y ~ x, family = binomial)
+comp <- anova(fit1, fit2, test = "Chisq")
+plotchisqtest(comp)
+
 }
 \author{
 Nils Myszkowski <nmyszkowski@pace.edu>
