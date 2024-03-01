@@ -21,14 +21,12 @@
 #' @param signifdigitsf A numeric indicating the number of desired significant figures reported for the F (optional).
 #' @param curvelinesize A numeric indicating the size of the curve line (optional).
 #' @param cutlinesize A numeric indicating the size of the cut line (optional). By default, the size of the curve line is used.
+#' @param p_value_position A numeric vector of length 2, indicating the x and y coordinates of the p-value label. By default, the position is set to \code{"auto"}. Note that the absolute value is used, and the sign is ignored.
 #' @return A plot with the density of probability of F under the null hypothesis, annotated with the observed test statistic and the p-value.
 #' @export plotftest
 #' @examples
 #' #Making an F plot with an F of 3, and degrees of freedom of 1 and 5.
 #' plotftest(f = 4, dfnum = 3, dfdenom = 5)
-#'
-#' #Note that the same can be obtained even quicker with:
-#' plotftest(4,3,5)
 #'
 #' #The same plot without the f or p value
 #' plotftest(4,3,5, blank = TRUE)
@@ -49,7 +47,7 @@
 #' plotftest(comp)
 #'
 #' @author Nils Myszkowski <nmyszkowski@pace.edu>
-plotftest <- function(f, dfnum = f$fstatistic[2], dfdenom = f$fstatistic[3], blank = FALSE, xmax = "auto", title = "F Test", xlabel = "F", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colorleft = "aliceblue", colorright = "firebrick3", colorleftcurve = "black", colorrightcurve = "black", colorcut = "black", colorplabel = colorright, theme = "default", signifdigitsf = 3, curvelinesize = .4, cutlinesize = curvelinesize) {
+plotftest <- function(f, dfnum = f$fstatistic[2], dfdenom = f$fstatistic[3], blank = FALSE, xmax = "auto", title = "F Test", xlabel = "F", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colorleft = "aliceblue", colorright = "firebrick3", colorleftcurve = "black", colorrightcurve = "black", colorcut = "black", colorplabel = colorright, theme = "default", signifdigitsf = 3, curvelinesize = .4, cutlinesize = curvelinesize, p_value_position = "auto") {
   x=NULL
 
 
@@ -117,10 +115,18 @@ p_value_format <- function(p) {
   density <- function(x) stats::df(x, df1 = dfnum, df2 = dfdenom)
   #Use the maximum density (top of the curve) to use as maximum y axis value (start finding maximum at .2 to avoid very high densities values when the density function has a y axis asymptote)
   maxdensity <- stats::optimize(density, interval=c(0.2, xbound), maximum=TRUE)$objective
-  #Use the density corresponding to the given f to place the label above (if this density is too high places the label lower in order to avoid the label being out above the plot)
-  y_plabel <- min(density(f)+maxdensity*.1, maxdensity*.7)
-  #To place the p value labels on the x axis, at the middle of the part of the curve they correspond to
-  x_plabel <- f+(xbound-f)/2
+
+  # Set the position of the p value automatically or manually
+  if (length(p_value_position) == 1) {
+    #Use the density corresponding to the given f to place the label above (if this density is too high places the label lower in order to avoid the label being out above the plot)
+    y_plabel <- min(density(f)+maxdensity*.1, maxdensity*.7)
+    #To place the p value labels on the x axis, at the middle of the part of the curve they correspond to
+    x_plabel <- f+(xbound-f)/2
+  } else {
+    x_plabel <- abs(p_value_position[1])
+    y_plabel <- abs(p_value_position[2])
+  }
+
   #Define the fill color of the labels as white
   colorlabelfill <- "white"
   #Theme options
@@ -166,7 +172,7 @@ p_value_format <- function(p) {
     #Right side area
     ggplot2::stat_function(fun = area_range(density, f, xbound), geom="area", fill=colorright, n=precisionfactor) +
     #Right side curve
-    ggplot2::stat_function(fun = density, xlim = c(f,xbound), colour = colorrightcurve,linewidth=curvelinesize, ) +
+    ggplot2::stat_function(fun = density, xlim = c(f,xbound), colour = colorrightcurve,linewidth=curvelinesize) +
     #Left side curve
     ggplot2::stat_function(fun = density, xlim = c(0,f), colour = colorleftcurve, n=1000, linewidth=curvelinesize) +
     #Define plotting area for extraspace (proportional to the max y plotted) below the graph to place f label
@@ -174,9 +180,11 @@ p_value_format <- function(p) {
     #Cut line
     ggplot2::geom_vline(xintercept = f*1, colour = colorcut, linewidth = cutlinesize) +
     #p label
-    ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = plab), colour=colorplabel, fill = colorlabelfill, family=fontfamily) +
+    #ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = plab), colour=colorplabel, fill = colorlabelfill, family=fontfamily) +
+    ggplot2::annotate(geom = "label", x = x_plabel, y = y_plabel, label = plab, colour = colorplabel, fill = colorlabelfill, family = fontfamily) +
     #f label
-    ggplot2::geom_label(ggplot2::aes(f,maxdensity*(-.05),label = flab),colour=colorcut, fill = colorlabelfill, family=fontfamily) +
+    #ggplot2::geom_label(ggplot2::aes(f,maxdensity*(-.05),label = flab),colour=colorcut, fill = colorlabelfill, family=fontfamily) +
+    ggplot2::annotate(geom = "label", x = f, y = maxdensity*(-.05), label = flab, colour = colorcut, fill = colorlabelfill, family = fontfamily) +
     #Add the title
     ggplot2::ggtitle(title) +
     #Axis labels

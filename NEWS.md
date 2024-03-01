@@ -1,3 +1,7 @@
+# nhstplot 1.3.0
+- The p-value position can now be adjusted with the `p_value_position` argument (see vignette for examples).
+- Fixing incompatibilities with the latest version of `ggplot2`.
+
 # nhstplot 1.2.0
 - You can now pass nested model comparisons ("F-change" tests, or Deviance/Likelihood Ratio Tests) F and chi-square tests created with the `anova()` directly for plotting (see vignette for examples).
 - Code improvements and updates.

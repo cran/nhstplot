@@ -2,7 +2,7 @@
 #'
 #' This function plots the density probability distribution of a z statistic, with appropriate vertical cutlines at the z value. The p-value and the observed z value are plotted. Although largely customizable, only one argument is required (the observed z statistic) for a two-tailed z test. The optional argument \code{tails = "one"} plots a one-tailed test plot (the tail is on the left or right, depending on the sign of the z statistic).
 #'
-#' @param z A numeric value indicating the observed t statistic.
+#' @param z A numeric value indicating the observed z statistic.
 #' @param tails A character that indicates whether to plot a one (\code{"one"}) or two (\code{"two"}) tailed z-test (optional). By default, a two-tailed test is plotted.
 #' @param blank A logical that indicates whether to hide (\code{blank = TRUE}) the test statistic value, p value and cutline. The corresponding colors are actually only made transparent when \code{blank = TRUE}, so that the output is scaled exactly the same (this is useful and especially intended for step-by-step explanations).
 #' @param xmax A numeric including the maximum for the x-axis. Defaults to \code{"auto"}, which scales the plot automatically (optional).
@@ -20,12 +20,10 @@
 #' @param signifdigitsz A numeric indicating the number of desired significant figures reported for the z label (optional).
 #' @param curvelinesize A numeric indicating the size of the curve line (optional).
 #' @param cutlinesize A numeric indicating the size of the cut line(s) (optional). By default, the size of the curve line is used.
+#' @param p_value_position A numeric vector of length 2, indicating the x and y coordinates of the p-value label. By default, the position is set to \code{"auto"}. Note that the absolute value is used, and the sign is ignored. The position is set to the right if the test statistic value is positive, to the left if the test statistic value is negative, and on both sides if a two tailed test is plotted.
 #' @return Returns a plot with the density of probability of z under the null hypothesis, annotated with the observed z statistic and the p-value.
 #' @examples
 #' #Making a z test plot with a z value of 2.
-#' plotztest(z = 2)
-#'
-#' #Note that the same can be obtained even quicker with:
 #' plotztest(2)
 #'
 #' #The same plot without the z or p value
@@ -36,7 +34,7 @@
 #'
 #' @author Nils Myszkowski <nmyszkowski@pace.edu>
 #' @export plotztest
-plotztest <- function(z, tails = "two", blank = FALSE, xmax = "auto", title = "z Test", xlabel = "z", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colormiddle = "aliceblue", colorsides = "firebrick3", colormiddlecurve = "black", colorsidescurve = "black", colorcut = "black", colorplabel = colorsides, theme = "default", signifdigitsz = 3, curvelinesize = .4, cutlinesize = curvelinesize) {
+plotztest <- function(z, tails = "two", blank = FALSE, xmax = "auto", title = "z test", xlabel = "z", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colormiddle = "aliceblue", colorsides = "firebrick3", colormiddlecurve = "black", colorsidescurve = "black", colorcut = "black", colorplabel = colorsides, theme = "default", signifdigitsz = 3, curvelinesize = .4, cutlinesize = curvelinesize, p_value_position = "auto") {
   x=NULL
 
   #Unname inputs (can cause issues)
@@ -83,12 +81,21 @@ plotztest <- function(z, tails = "two", blank = FALSE, xmax = "auto", title = "z
   density <- function(x) stats::dnorm(x, mean = 0, sd = 1)
   #Use the maximum density (top of the curve) to scale the y axis
   maxdensity <- density(0)
-  #Use the density corresponding to the z value to place the label above (if this density is too high places the label lower in order to avoid the label being out above the plot)
-  y_plabel <- min(density(z)+maxdensity*.1, maxdensity*.7)
-  #To place the p value labels on the x axis, at the middle of the part of the curve they correspond to
-  x_plabel <- z+(xbound-z)/2
-  #To place t labels on the x axis where their cutline is, avoiding that they overlap if the two cutlines are too close
+
+  # Set the position of the p value automatically or manually
+  if (length(p_value_position) == 1) {
+    #To place the p value labels on the x axis, at the middle of the part of the curve they correspond to
+    x_plabel <- z+(xbound-z)/2
+    #Use the density corresponding to the z value to place the label above (if this density is too high places the label lower in order to avoid the label being out above the plot)
+    y_plabel <- min(density(z)+maxdensity*.1, maxdensity*.7)
+  } else {
+    x_plabel <- abs(p_value_position[1])
+    y_plabel <- abs(p_value_position[2])
+  }
+
+  #To place z labels on the x axis where their cutline is, avoiding that they overlap if the two cutlines are too close
   x_zlabel <- max(z, .5)
+
   #Define the fill color of the labels as white
   colorlabelfill <- "white"
   #Theme options
@@ -151,13 +158,21 @@ plotztest <- function(z, tails = "two", blank = FALSE, xmax = "auto", title = "z
       #Right cut line
       ggplot2::geom_vline(xintercept = z, colour = colorcut, linewidth = cutlinesize) +
       #Left p label
-      ggplot2::geom_label(ggplot2::aes(-x_plabel,y_plabel,label = phalflab), parse = T, colour=colorplabel, fill = colorlabelfill, family = fontfamily) +
+      # Previous version
+      #ggplot2::geom_label(ggplot2::aes(-x_plabel,y_plabel,label = phalflab), parse = T, colour=colorplabel, fill = colorlabelfill, family = fontfamily) +
+      ggplot2::annotate(x = -x_plabel, y = y_plabel, label = phalflab, geom = "label", parse = T, colour=colorplabel, fill = colorlabelfill, family = fontfamily) +
       #Right p label
-      ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = phalflab), parse = T, fill = colorlabelfill, colour=colorplabel,family = fontfamily) +
+      # Previous version
+      #ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = phalflab), parse = T, fill = colorlabelfill, colour=colorplabel,family = fontfamily) +
+      ggplot2::annotate(x = x_plabel, y = y_plabel, label = phalflab, geom = "label", parse = T, colour=colorplabel, fill = colorlabelfill, family = fontfamily) +
       #Left z label
-      ggplot2::geom_label(ggplot2::aes(-x_zlabel,-.05,label = zlableft),colour=colorcut, fill = colorlabelfill, parse = T, family=fontfamily) +
+      # Previous version
+      #ggplot2::geom_label(ggplot2::aes(-x_zlabel,-.05,label = zlableft),colour=colorcut, fill = colorlabelfill, parse = T, family=fontfamily) +
+      ggplot2::annotate(x = -x_zlabel, y = -.05, label = zlableft, geom = "label", parse = T, colour=colorcut, fill = colorlabelfill, family=fontfamily) +
       #Right z label
-      ggplot2::geom_label(ggplot2::aes(x_zlabel,-.05,label = zlabright), parse = T, colour=colorcut, fill = colorlabelfill, family=fontfamily) +
+      # Previous version
+      #ggplot2::geom_label(ggplot2::aes(x_zlabel,-.05,label = zlabright), parse = T, colour=colorcut, fill = colorlabelfill, family=fontfamily) +
+      ggplot2::annotate(x = x_zlabel, y = -.05, label = zlabright, geom = "label", parse = T, colour=colorcut, fill = colorlabelfill, family=fontfamily) +
       #Add the title
       ggplot2::ggtitle(label = title) +
       #Apply black and white ggplot theme to avoid grey background, etc.
@@ -194,11 +209,13 @@ plotztest <- function(z, tails = "two", blank = FALSE, xmax = "auto", title = "z
         #Define plotting area for extraspace below the graph to place z label
         ggplot2::coord_cartesian(xlim=c(-xbound,xbound),ylim=c(-.05, maxdensity)) +
         #Right cut line
-        ggplot2::geom_vline(xintercept = z, colour = colorcut, size = cutlinesize) +
+        ggplot2::geom_vline(xintercept = z, colour = colorcut, linewidth = cutlinesize) +
         #Right p label
-        ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = plab), parse = T, fill = colorlabelfill, colour=colorplabel,family = fontfamily) +
+        #ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = plab), parse = T, fill = colorlabelfill, colour=colorplabel,family = fontfamily) +
+        ggplot2::annotate(x = x_plabel, y = y_plabel, label = plab, geom = "label", parse = T, colour=colorplabel, fill = colorlabelfill, family = fontfamily) +
         #Right z label
-        ggplot2::geom_label(ggplot2::aes(x_zlabel,-.05,label = zlab), parse = T, fill = colorlabelfill, colour=colorcut, family=fontfamily) +
+        #ggplot2::geom_label(ggplot2::aes(x_zlabel,-.05,label = zlab), parse = T, fill = colorlabelfill, colour=colorcut, family=fontfamily) +
+        ggplot2::annotate(x = x_zlabel, y = -.05, label = zlab, geom = "label", parse = T, colour=colorcut, fill = colorlabelfill, family=fontfamily) +
         #Add the title
         ggplot2::ggtitle(label = title) +
         #Apply black and white ggplot theme to avoid grey background, etc.
@@ -223,19 +240,21 @@ plotztest <- function(z, tails = "two", blank = FALSE, xmax = "auto", title = "z
         #Left side area
         ggplot2::stat_function(fun = area_range(density, -xbound, -z), geom="area", fill=colorsides, n=precisionfactor) +
         #Left side curve
-        ggplot2::stat_function(fun = density, xlim = c(-xbound,-z), colour = colorsidescurve,size=curvelinesize,n=precisionfactor) +
+        ggplot2::stat_function(fun = density, xlim = c(-xbound,-z), colour = colorsidescurve,linewidth = curvelinesize,n=precisionfactor) +
         #Middle and right curve
-        ggplot2::stat_function(fun = density, xlim = c(-z,xbound), colour = colormiddlecurve, n=precisionfactor, size=curvelinesize) +
+        ggplot2::stat_function(fun = density, xlim = c(-z,xbound), colour = colormiddlecurve, n = precisionfactor, linewidth=curvelinesize) +
         #Axis labels
         ggplot2::labs(x=xlabel,y=ylabel, size=10) +
         #Define plotting area for extraspace below the graph to place t label
         ggplot2::coord_cartesian(xlim=c(-xbound,xbound),ylim=c(-.05, maxdensity)) +
         #Left cut line
-        ggplot2::geom_vline(xintercept = -z, colour = colorcut, size = cutlinesize) +
+        ggplot2::geom_vline(xintercept = -z, colour = colorcut, linewidth = cutlinesize) +
         #Left p label
-        ggplot2::geom_label(ggplot2::aes(-x_plabel,y_plabel,label = plab), parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
+        #ggplot2::geom_label(ggplot2::aes(-x_plabel,y_plabel,label = plab), parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
+        ggplot2::annotate(x = -x_plabel, y = y_plabel, label = plab, geom = "label", parse = T, colour=colorplabel, fill = colorlabelfill, family = fontfamily) +
         #Left z label
-        ggplot2::geom_label(ggplot2::aes(-x_zlabel,-.05,label = zlab, vjust = 0), fill = colorlabelfill, colour=colorcut, parse = T, family=fontfamily) +
+        #ggplot2::geom_label(ggplot2::aes(-x_zlabel,-.05,label = zlab, vjust = 0), fill = colorlabelfill, colour=colorcut, parse = T, family=fontfamily) +
+        ggplot2::annotate(x = -x_zlabel, y = -.05, label = zlab, geom = "label", parse = T, colour=colorcut, fill = colorlabelfill, family=fontfamily) +
         #Add the title
         ggplot2::ggtitle(label = title) +
         #Apply black and white ggplot theme to avoid grey background, etc.

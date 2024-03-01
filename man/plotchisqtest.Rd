@@ -22,7 +22,8 @@ plotchisqtest(
   theme = "default",
   signifdigitschisq = 3,
   curvelinesize = 0.4,
-  cutlinesize = curvelinesize
+  cutlinesize = curvelinesize,
+  p_value_position = "auto"
 )
 }
 \arguments{
@@ -61,6 +62,8 @@ plotchisqtest(
 \item{curvelinesize}{A numeric indicating the size of the curve line (optional).}
 
 \item{cutlinesize}{A numeric indicating the size of the cut line (optional). By default, the size of the curve line is used.}
+
+\item{p_value_position}{A numeric vector of length 2, indicating the x and y coordinates of the p-value label. By default, the position is set to \code{"auto"}. Note that the absolute value is used, and the sign is ignored.}
 }
 \value{
 A plot with the density of probability of \eqn{\chi^2}{\chi-squared} under the null hypothesis, annotated with the observed test statistic and the p-value.
@@ -71,9 +74,6 @@ This function plots the density probability distribution of a \eqn{\chi^2}{\chi-
 \examples{
 #Making a chi-squared plot with Chi-squared of 8 and df of 4
 plotchisqtest(chisq = 8, df = 4)
-
-#Note that the same can be obtained even quicker with:
-plotchisqtest(8,4)
 
 #The same plot without the Chi-Squared or p value
 plotchisqtest(8,4, blank = TRUE)

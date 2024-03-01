@@ -9,7 +9,7 @@ plotztest(
   tails = "two",
   blank = FALSE,
   xmax = "auto",
-  title = "z Test",
+  title = "z test",
   xlabel = "z",
   ylabel = "Density of probability\\nunder the null hypothesis",
   fontfamily = "serif",
@@ -22,11 +22,12 @@ plotztest(
   theme = "default",
   signifdigitsz = 3,
   curvelinesize = 0.4,
-  cutlinesize = curvelinesize
+  cutlinesize = curvelinesize,
+  p_value_position = "auto"
 )
 }
 \arguments{
-\item{z}{A numeric value indicating the observed t statistic.}
+\item{z}{A numeric value indicating the observed z statistic.}
 
 \item{tails}{A character that indicates whether to plot a one (\code{"one"}) or two (\code{"two"}) tailed z-test (optional). By default, a two-tailed test is plotted.}
 
@@ -61,6 +62,8 @@ plotztest(
 \item{curvelinesize}{A numeric indicating the size of the curve line (optional).}
 
 \item{cutlinesize}{A numeric indicating the size of the cut line(s) (optional). By default, the size of the curve line is used.}
+
+\item{p_value_position}{A numeric vector of length 2, indicating the x and y coordinates of the p-value label. By default, the position is set to \code{"auto"}. Note that the absolute value is used, and the sign is ignored. The position is set to the right if the test statistic value is positive, to the left if the test statistic value is negative, and on both sides if a two tailed test is plotted.}
 }
 \value{
 Returns a plot with the density of probability of z under the null hypothesis, annotated with the observed z statistic and the p-value.
@@ -70,9 +73,6 @@ This function plots the density probability distribution of a z statistic, with 
 }
 \examples{
 #Making a z test plot with a z value of 2.
-plotztest(z = 2)
-
-#Note that the same can be obtained even quicker with:
 plotztest(2)
 
 #The same plot without the z or p value

@@ -23,7 +23,8 @@ plotftest(
   theme = "default",
   signifdigitsf = 3,
   curvelinesize = 0.4,
-  cutlinesize = curvelinesize
+  cutlinesize = curvelinesize,
+  p_value_position = "auto"
 )
 }
 \arguments{
@@ -64,6 +65,8 @@ plotftest(
 \item{curvelinesize}{A numeric indicating the size of the curve line (optional).}
 
 \item{cutlinesize}{A numeric indicating the size of the cut line (optional). By default, the size of the curve line is used.}
+
+\item{p_value_position}{A numeric vector of length 2, indicating the x and y coordinates of the p-value label. By default, the position is set to \code{"auto"}. Note that the absolute value is used, and the sign is ignored.}
 }
 \value{
 A plot with the density of probability of F under the null hypothesis, annotated with the observed test statistic and the p-value.
@@ -74,9 +77,6 @@ This function plots the density probability distribution of an F statistic, with
 \examples{
 #Making an F plot with an F of 3, and degrees of freedom of 1 and 5.
 plotftest(f = 4, dfnum = 3, dfdenom = 5)
-
-#Note that the same can be obtained even quicker with:
-plotftest(4,3,5)
 
 #The same plot without the f or p value
 plotftest(4,3,5, blank = TRUE)

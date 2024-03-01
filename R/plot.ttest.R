@@ -1,6 +1,6 @@
 #' Illustrate a one- or two-tailed t test graphically.
 #'
-#' This function plots the density probability distribution of a Student's (or Welch's) t statistic, with appropriate vertical cutlines at the t value. The p-value and the observed t value are plotted. Although largely customizable, only two arguments are required (the observed t statistic and the degrees of freedom) for a two-tailed t test. The optional argument \code{tails = "one"} plots a one-tailed test plot (the tail is on the left or right, depending on the sign of the t statistic).
+#' This function plots the density probability distribution of a t statistic, with appropriate vertical cutlines at the t value. The p-value and the observed t value are plotted. Although largely customizable, only two arguments are required (the observed t statistic and the degrees of freedom) for a two-tailed t test. The optional argument \code{tails = "one"} plots a one-tailed test plot (the tail is on the left or right, depending on the sign of the t statistic).
 #'
 #' @param t A numeric value indicating the observed t statistic. Alternatively, you can pass an object of class \code{htest} created by the function \code{t.test()} or \code{cor.test()}.
 #' @param df A numeric value indicating the degrees of freedom. This argument is optional if you are using an \code{htest} object as the \code{t} argument.
@@ -21,13 +21,11 @@
 #' @param signifdigitst A numeric indicating the number of desired significant figures reported for the t label (optional).
 #' @param curvelinesize A numeric indicating the size of the curve line (optional).
 #' @param cutlinesize A numeric indicating the size of the cut line(s) (optional). By default, the size of the curve line is used.
+#' @param p_value_position A numeric vector of length 2, indicating the x and y coordinates of the p-value label. By default, the position is set to \code{"auto"}. Note that the absolute value is used, and the sign is ignored. The position is set to the right if the test statistic value is positive, to the left if the test statistic value is negative, and on both sides if a two tailed test is plotted.
 #' @return A plot with the density of probability of t under the null hypothesis, annotated with the observed test statistic and the p-value.
 #' @examples
 #' #Making a t test plot with a t value of 2 and df of 10
 #' plotttest(t = 2, df = 10)
-#'
-#' #Note that the same can be obtained even quicker with:
-#' plotttest(2,10)
 #'
 #' #The same plot without the t or p value
 #' plotttest(2,10, blank = TRUE)
@@ -46,7 +44,7 @@
 #' @author Nils Myszkowski <nmyszkowski@pace.edu>
 #' @export plotttest
 
-plotttest <- function(t, df = t$parameter, tails = "two", blank = FALSE, xmax = "auto", title = "t Test", xlabel = "t", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colormiddle = "aliceblue", colorsides = "firebrick3", colormiddlecurve = "black", colorsidescurve = "black", colorcut = "black", colorplabel = colorsides, theme = "default", signifdigitst = 3, curvelinesize = .4, cutlinesize = curvelinesize) {
+plotttest <- function(t, df = t$parameter, tails = "two", blank = FALSE, xmax = "auto", title = "t Test", xlabel = "t", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colormiddle = "aliceblue", colorsides = "firebrick3", colormiddlecurve = "black", colorsidescurve = "black", colorcut = "black", colorplabel = colorsides, theme = "default", signifdigitst = 3, curvelinesize = .4, cutlinesize = curvelinesize, p_value_position = "auto") {
   x=NULL
 
 
@@ -102,10 +100,18 @@ plotttest <- function(t, df = t$parameter, tails = "two", blank = FALSE, xmax = 
   density <- function(x) stats::dt(x, df)
   #Use the maximum density (top of the curve) to scale the y axis
   maxdensity <- density(0)
-  #Use the density corresponding to the t value to place the label above (if this density is too high places the label lower in order to avoid the label being out above the plot)
-  y_plabel <- min(density(t)+maxdensity*.1, maxdensity*.7)
-  #To place the p value labels on the x axis, at the middle of the part of the curve they correspond to
-  x_plabel <- t+(xbound-t)/2
+
+  # Set the position of the p value automatically or manually
+  if (length(p_value_position) == 1) {
+    #Use the density corresponding to the t value to place the label above (if this density is too high places the label lower in order to avoid the label being out above the plot)
+    y_plabel <- min(density(t)+maxdensity*.1, maxdensity*.7)
+    #To place the p value labels on the x axis, at the middle of the part of the curve they correspond to
+    x_plabel <- t+(xbound-t)/2
+  } else {
+    x_plabel <- abs(p_value_position[1])
+    y_plabel <- abs(p_value_position[2])
+  }
+
   #To place t labels on the x axis where their cutline is, avoiding that they overlap if the two cutlines are too close
   x_tlabel <- max(t, .5)
   #Define the fill color of the labels as white
@@ -150,7 +156,7 @@ plotttest <- function(t, df = t$parameter, tails = "two", blank = FALSE, xmax = 
   if (tails == "two") {
           ggplot2::ggplot(data.frame(x = c(-xbound*2, xbound*2)), ggplot2::aes(x)) +
           #Axis labels
-          ggplot2::labs(x=xlabel,y=ylabel, size=10) +
+          ggplot2::labs(x=xlabel,y=ylabel, size = 10) +
           #Middle area
           ggplot2::stat_function(fun = area_range(density, -xbound, xbound), geom="area", fill=colormiddle, n=precisionfactor) +
           #Right side area
@@ -170,13 +176,17 @@ plotttest <- function(t, df = t$parameter, tails = "two", blank = FALSE, xmax = 
           #Right cut line
           ggplot2::geom_vline(xintercept = t, colour = colorcut, linewidth = cutlinesize) +
           #Left p label
-          ggplot2::geom_label(ggplot2::aes(-x_plabel,y_plabel,label = phalflab), parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
+          #ggplot2::geom_label(ggplot2::aes(-x_plabel,y_plabel,label = phalflab), parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
+          ggplot2::annotate(geom = "label", x = -x_plabel, y = y_plabel, label = phalflab, parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
           #Right p label
-          ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = phalflab), parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
+          #ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = phalflab), parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
+          ggplot2::annotate(geom = "label", x = x_plabel, y = y_plabel, label = phalflab, parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
           #Left t label
-          ggplot2::geom_label(ggplot2::aes(-x_tlabel,-.04,label = tlableft), fill = colorlabelfill, colour=colorcut, parse = T, family=fontfamily) +
+          #ggplot2::geom_label(ggplot2::aes(-x_tlabel,-.04,label = tlableft), fill = colorlabelfill, colour=colorcut, parse = T, family=fontfamily) +
+          ggplot2::annotate(geom = "label", x = -x_tlabel, y = -.04, label = tlableft, parse = T, fill = colorlabelfill, colour=colorcut, family=fontfamily) +
           #Right t label
-          ggplot2::geom_label(ggplot2::aes(x_tlabel,-.04,label = tlabright), parse = T, fill = colorlabelfill, colour=colorcut, family=fontfamily) +
+          #ggplot2::geom_label(ggplot2::aes(x_tlabel,-.04,label = tlabright), parse = T, fill = colorlabelfill, colour=colorcut, family=fontfamily) +
+          ggplot2::annotate(geom = "label", x = x_tlabel, y = -.04, label = tlabright, parse = T, fill = colorlabelfill, colour=colorcut, family=fontfamily) +
           #Add the title
           ggplot2::ggtitle(title) +
           #Apply black and white ggplot theme to avoid grey background, etc.
@@ -207,17 +217,19 @@ plotttest <- function(t, df = t$parameter, tails = "two", blank = FALSE, xmax = 
           #Right side area
           ggplot2::stat_function(fun = area_range(density, t, xbound), geom="area", fill=colorsides, n=precisionfactor) +
           #Left and middle curve
-          ggplot2::stat_function(fun = density, xlim = c(-xbound,t), colour = colormiddlecurve,size=curvelinesize,n=precisionfactor) +
+          ggplot2::stat_function(fun = density, xlim = c(-xbound,t), colour = colormiddlecurve,linewidth = curvelinesize,n=precisionfactor) +
           #Right side curve
-          ggplot2::stat_function(fun = density, xlim = c(t,xbound), colour = colorsidescurve,size=curvelinesize,n=precisionfactor) +
+          ggplot2::stat_function(fun = density, xlim = c(t,xbound), colour = colorsidescurve,linewidth = curvelinesize,n=precisionfactor) +
           #Define plotting area for extraspace below the graph to place t label
           ggplot2::coord_cartesian(xlim=c(-xbound,xbound),ylim=c(-.05, maxdensity)) +
           #Right cut line
           ggplot2::geom_vline(xintercept = t, colour = colorcut, size = cutlinesize) +
           #Right p label
-          ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = plab), parse = T, fill = colorlabelfill, colour=colorplabel,family = fontfamily) +
+          #ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = plab), parse = T, fill = colorlabelfill, colour=colorplabel,family = fontfamily) +
+          ggplot2::annotate(geom = "label", x = x_plabel, y = y_plabel, label = plab, parse = T, fill = colorlabelfill, colour=colorplabel,family = fontfamily) +
           #Right t label
-          ggplot2::geom_label(ggplot2::aes(x_tlabel,-.05,label = tlab), parse = T, fill = colorlabelfill, colour=colorcut, family=fontfamily) +
+          #ggplot2::geom_label(ggplot2::aes(x_tlabel,-.05,label = tlab), parse = T, fill = colorlabelfill, colour=colorcut, family=fontfamily) +
+          ggplot2::annotate(geom = "label", x = x_tlabel, y = -.05, label = tlab, parse = T, fill = colorlabelfill, colour=colorcut, family=fontfamily) +
           #Add the title
           ggplot2::ggtitle(title) +
           #Apply black and white ggplot theme to avoid grey background, etc.
@@ -244,17 +256,19 @@ plotttest <- function(t, df = t$parameter, tails = "two", blank = FALSE, xmax = 
           #Left side area
           ggplot2::stat_function(fun = area_range(density, -xbound, -t), geom="area", fill=colorsides, n=precisionfactor) +
           #Left side curve
-          ggplot2::stat_function(fun = density, xlim = c(-xbound,-t), colour = colorsidescurve,size=curvelinesize,n=precisionfactor) +
+          ggplot2::stat_function(fun = density, xlim = c(-xbound,-t), colour = colorsidescurve,linewidth = curvelinesize,n=precisionfactor) +
           #Middle and right curve
-          ggplot2::stat_function(fun = density, xlim = c(-t,xbound), colour = colormiddlecurve, n=precisionfactor, size=curvelinesize) +
+          ggplot2::stat_function(fun = density, xlim = c(-t,xbound), colour = colormiddlecurve, n=precisionfactor, linewidth = curvelinesize) +
           #Define plotting area for extraspace below the graph to place t label
           ggplot2::coord_cartesian(xlim=c(-xbound,xbound),ylim=c(-.05, maxdensity)) +
           #Left cut line
           ggplot2::geom_vline(xintercept = -t, colour = colorcut, size = cutlinesize) +
           #Left p label
-          ggplot2::geom_label(ggplot2::aes(-x_plabel,y_plabel,label = plab), parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
+          #ggplot2::geom_label(ggplot2::aes(-x_plabel,y_plabel,label = plab), parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
+          ggplot2::annotate(geom = "label", x = -x_plabel, y = y_plabel, label = plab, parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
           #Left t label
-          ggplot2::geom_label(ggplot2::aes(-x_tlabel,-.05,label = tlab),fill = colorlabelfill, colour=colorcut, parse = T, family=fontfamily) +
+          #ggplot2::geom_label(ggplot2::aes(-x_tlabel,-.05,label = tlab),fill = colorlabelfill, colour=colorcut, parse = T, family=fontfamily) +
+          ggplot2::annotate(geom = "label", x = -x_tlabel, y = -.04, label = tlab, parse = T, fill = colorlabelfill, colour=colorcut, family=fontfamily) +
           #Add the title
           ggplot2::ggtitle(title) +
           #Apply black and white ggplot theme to avoid grey background, etc.

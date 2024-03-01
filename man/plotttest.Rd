@@ -23,7 +23,8 @@ plotttest(
   theme = "default",
   signifdigitst = 3,
   curvelinesize = 0.4,
-  cutlinesize = curvelinesize
+  cutlinesize = curvelinesize,
+  p_value_position = "auto"
 )
 }
 \arguments{
@@ -64,19 +65,18 @@ plotttest(
 \item{curvelinesize}{A numeric indicating the size of the curve line (optional).}
 
 \item{cutlinesize}{A numeric indicating the size of the cut line(s) (optional). By default, the size of the curve line is used.}
+
+\item{p_value_position}{A numeric vector of length 2, indicating the x and y coordinates of the p-value label. By default, the position is set to \code{"auto"}. Note that the absolute value is used, and the sign is ignored. The position is set to the right if the test statistic value is positive, to the left if the test statistic value is negative, and on both sides if a two tailed test is plotted.}
 }
 \value{
 A plot with the density of probability of t under the null hypothesis, annotated with the observed test statistic and the p-value.
 }
 \description{
-This function plots the density probability distribution of a Student's (or Welch's) t statistic, with appropriate vertical cutlines at the t value. The p-value and the observed t value are plotted. Although largely customizable, only two arguments are required (the observed t statistic and the degrees of freedom) for a two-tailed t test. The optional argument \code{tails = "one"} plots a one-tailed test plot (the tail is on the left or right, depending on the sign of the t statistic).
+This function plots the density probability distribution of a t statistic, with appropriate vertical cutlines at the t value. The p-value and the observed t value are plotted. Although largely customizable, only two arguments are required (the observed t statistic and the degrees of freedom) for a two-tailed t test. The optional argument \code{tails = "one"} plots a one-tailed test plot (the tail is on the left or right, depending on the sign of the t statistic).
 }
 \examples{
 #Making a t test plot with a t value of 2 and df of 10
 plotttest(t = 2, df = 10)
-
-#Note that the same can be obtained even quicker with:
-plotttest(2,10)
 
 #The same plot without the t or p value
 plotttest(2,10, blank = TRUE)
