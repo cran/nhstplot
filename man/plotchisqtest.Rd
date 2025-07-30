@@ -27,7 +27,7 @@ plotchisqtest(
 )
 }
 \arguments{
-\item{chisq}{A numeric value indicating the observed \eqn{\chi^2}{\chi-squared} statistic. Alternatively, you can use an object of class \code{htest} created by the function \code{chisq.test()}.}
+\item{chisq}{A numeric value indicating the observed \eqn{\chi^2}{\chi-squared} statistic. Alternatively, you can use an object of class \code{htest} created by the function \code{chisq.test()}, or an object created with \code{glm()} (in this case, a likelihood ratio test is performed, comparing the model to the intercept-only model).}
 
 \item{df}{A numeric value indicating the degrees of freedom. This argument is optional if you are using an \code{htest} object as the \code{chisq} argument.}
 
@@ -81,6 +81,12 @@ plotchisqtest(8,4, blank = TRUE)
 #Plot using a chisq.test()
 test <- chisq.test(c(A = 37, B = 18, C = 25))
 plotchisqtest(test)
+
+#Plot from glm()
+set.seed(1)
+y <- rbinom(10, 1, .4) ; x <- 2*y + rnorm(10)
+fit <- glm(y ~ x, family = binomial)
+plotchisqtest(fit)
 
 #Plot from anova() model comparison
 set.seed(1)

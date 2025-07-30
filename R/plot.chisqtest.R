@@ -2,7 +2,7 @@
 #'
 #' This function plots the density probability distribution of a \eqn{\chi^2}{\chi-squared} statistic, with a vertical cutline at the observed \eqn{\chi^2}{\chi-squared} value specified. The p-value and the observed \eqn{\chi^2}{\chi-squared} value are plotted. Although largely customizable, only two arguments are required (the observed \eqn{\chi^2}{\chi-squared} and the degrees of freedom).
 #'
-#' @param chisq A numeric value indicating the observed \eqn{\chi^2}{\chi-squared} statistic. Alternatively, you can use an object of class \code{htest} created by the function \code{chisq.test()}.
+#' @param chisq A numeric value indicating the observed \eqn{\chi^2}{\chi-squared} statistic. Alternatively, you can use an object of class \code{htest} created by the function \code{chisq.test()}, or an object created with \code{glm()} (in this case, a likelihood ratio test is performed, comparing the model to the intercept-only model).
 #' @param df A numeric value indicating the degrees of freedom. This argument is optional if you are using an \code{htest} object as the \code{chisq} argument.
 #' @param blank A logical that indicates whether to hide (\code{blank = TRUE}) the test statistic value, p value and cutline. The corresponding colors are actually only made transparent when \code{blank = TRUE}, so that the output is scaled exactly the same (this is useful and especially intended for step-by-step explanations).
 #' @param xmax A numeric including the maximum for the x-axis. Defaults to \code{"auto"}, which scales the plot automatically (optional).
@@ -34,6 +34,12 @@
 #' test <- chisq.test(c(A = 37, B = 18, C = 25))
 #' plotchisqtest(test)
 #'
+#' #Plot from glm()
+#' set.seed(1)
+#' y <- rbinom(10, 1, .4) ; x <- 2*y + rnorm(10)
+#' fit <- glm(y ~ x, family = binomial)
+#' plotchisqtest(fit)
+#'
 #' #Plot from anova() model comparison
 #' set.seed(1)
 #' y <- rbinom(10, 1, .4) ; x <- 2*y + rnorm(10)
@@ -47,6 +53,8 @@ plotchisqtest <- function(chisq, df = chisq$parameter, blank = FALSE, xmax = "au
   x=NULL
 
 
+  # Stop if z is not provided
+  if (missing(chisq)) {stop("The chi-squared value or an \'htest\', or \'anova\' object must be provided.")}
 
   # If chisq is a test() object, then mine it to get t and df
   if ("htest" %in% class(chisq)) {
@@ -56,8 +64,38 @@ plotchisqtest <- function(chisq, df = chisq$parameter, blank = FALSE, xmax = "au
 
   # If chisq is an anova() object, take values from it
   if ("anova" %in% class(chisq)) {
+    if (nrow(chisq) != 2) {
+      stop("anova() object must contain exactly one test (e.g., a comparison between two models). ",
+           "If you're trying to assess a single model against the intercept-only model, ",
+           "you may want to pass summary(model) instead.")}
+
     df <- chisq$Df[2]
-    chisq <- chisq$Deviance[2]
+    chisq_val <- chisq$Deviance[2]
+
+    if (is.na(chisq_val)) {
+      stop("Chi-squared value is NA; possibly invalid model comparison.")
+    }
+
+    chisq <- chisq_val  # overwrite if needed
+  }
+
+  # If chisq is a glm object, extract model comparison test
+  if ("glm" %in% class(chisq)) {
+    chisq_val <- chisq$null.deviance - chisq$deviance
+    df_val <- chisq$df.null - chisq$df.residual
+
+    if (chisq_val < 0 || df_val <= 0) {
+      stop("Invalid chi-squared test: null deviance must exceed residual deviance, and degrees of freedom must be positive.")
+    }
+
+    chisq <- chisq_val
+    df <- df_val
+  }
+
+  # If chisq is a summary.glm object, reject it
+  if ("summary.glm" %in% class(chisq)) {
+    stop("A summary.glm object does not contain the null deviance, so the chi-squared test cannot be computed. ",
+         "Please pass the original glm model object instead.")
   }
 
   #Unname inputs (can cause issues)

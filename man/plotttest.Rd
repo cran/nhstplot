@@ -6,7 +6,7 @@
 \usage{
 plotttest(
   t,
-  df = t$parameter,
+  df,
   tails = "two",
   blank = FALSE,
   xmax = "auto",

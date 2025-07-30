@@ -44,15 +44,22 @@
 #' @author Nils Myszkowski <nmyszkowski@pace.edu>
 #' @export plotttest
 
-plotttest <- function(t, df = t$parameter, tails = "two", blank = FALSE, xmax = "auto", title = "t Test", xlabel = "t", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colormiddle = "aliceblue", colorsides = "firebrick3", colormiddlecurve = "black", colorsidescurve = "black", colorcut = "black", colorplabel = colorsides, theme = "default", signifdigitst = 3, curvelinesize = .4, cutlinesize = curvelinesize, p_value_position = "auto") {
+plotttest <- function(t, df, tails = "two", blank = FALSE, xmax = "auto", title = "t Test", xlabel = "t", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colormiddle = "aliceblue", colorsides = "firebrick3", colormiddlecurve = "black", colorsidescurve = "black", colorcut = "black", colorplabel = colorsides, theme = "default", signifdigitst = 3, curvelinesize = .4, cutlinesize = curvelinesize, p_value_position = "auto") {
   x=NULL
 
+  # Stop if t is not provided
+  if (missing(t)) {stop("The t value or a \'htest\' object must be provided.")}
 
   # If t is a t.test() object, then mine it to get t and df
   if ("htest" %in% class(t)) {
     df <- t$parameter
     if (t$alternative != "two.sided") {tails = "one"} else {tails = "two"}
     t <- t$statistic
+  }
+
+  # Stop if df is not provided and t is not a t.test() object
+  if (missing(df) && !("htest" %in% class(t))) {
+    stop("Degrees of freedom must be provided if t is not an object of class htest.")
   }
 
   #Unname inputs (can cause issues)

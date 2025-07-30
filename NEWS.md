@@ -1,3 +1,8 @@
+# nhstplot 1.4.0
+- Improved error messages when passing invalid arguments to the plotting functions.
+- The `plotftest()` function now returns an error when the `anova()` does not contain exactly one test.
+- The `plotchisqtest()` function now accepts `glm` objects as input (a likelihood ratio test is used).
+
 # nhstplot 1.3.0
 - The p-value position can now be adjusted with the `p_value_position` argument (see vignette for examples).
 - Fixing incompatibilities with the latest version of `ggplot2`.

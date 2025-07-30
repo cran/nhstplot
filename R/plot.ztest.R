@@ -37,6 +37,10 @@
 plotztest <- function(z, tails = "two", blank = FALSE, xmax = "auto", title = "z test", xlabel = "z", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colormiddle = "aliceblue", colorsides = "firebrick3", colormiddlecurve = "black", colorsidescurve = "black", colorcut = "black", colorplabel = colorsides, theme = "default", signifdigitsz = 3, curvelinesize = .4, cutlinesize = curvelinesize, p_value_position = "auto") {
   x=NULL
 
+
+  # Stop if z is not provided
+  if (missing(z)) {stop("The z value must be provided.")}
+
   #Unname inputs (can cause issues)
   z <- unname(z)
 

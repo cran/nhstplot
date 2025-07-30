@@ -64,6 +64,15 @@ comp <- anova(fit1, fit2, test = "Chisq")
 plotchisqtest(comp)
 ```
 
+
+You can simply pass the glm object directly. The function will compute a likelihood ratio $\chi^2$ test using the difference between the null and residual deviance:
+
+```{r}
+mod <- glm(y ~ x, family = binomial)
+plotchisqtest(mod)
+```
+
+
 ## $F$ tests
 
 The `plotftest` function only requires 3 arguments : The first one is the $F$ value (parameter : `f`), and the second and third ones are respectively the degrees of freedom of the numerator (parameter `dfnum`) and the denominator (parameter `dfdenom`).

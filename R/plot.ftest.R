@@ -50,14 +50,28 @@
 plotftest <- function(f, dfnum = f$fstatistic[2], dfdenom = f$fstatistic[3], blank = FALSE, xmax = "auto", title = "F Test", xlabel = "F", ylabel = "Density of probability\nunder the null hypothesis", fontfamily = "serif", colorleft = "aliceblue", colorright = "firebrick3", colorleftcurve = "black", colorrightcurve = "black", colorcut = "black", colorplabel = colorright, theme = "default", signifdigitsf = 3, curvelinesize = .4, cutlinesize = curvelinesize, p_value_position = "auto") {
   x=NULL
 
+  # Stop if f is not provided
+  if (missing(f)) {stop("The f value or an \'anova\', \'summary.lm\' or \'lm\' object must be provided.")}
 
 
 # If f is an anova() object, take values from it
-if ("anova" %in% class(f)) {
-  dfnum <- f$Df[2]
-  dfdenom <- f$Res.Df[2]
-  f <- f$F[2]
-}
+  if ("anova" %in% class(f)) {
+    if (nrow(f) != 2) {
+      stop("anova() object must contain exactly one test (e.g., a comparison between two models). ",
+           "If you're trying to assess a single model against the intercept-only model, ",
+           "you may want to pass summary(model) instead.")
+      }
+
+    dfnum <- f$Df[2]
+    dfdenom <- f$Res.Df[2]
+    fstat <- f$F[2]
+
+    if (is.na(fstat)) {
+      stop("F statistic not available in anova() object.")
+    }
+
+    f <- fstat  # reassign if needed downstream
+  }
 
 
 # If f is a "summary.lm" object, take values from it
