@@ -194,13 +194,13 @@ plotchisqtest <- function(chisq, df = chisq$parameter, blank = FALSE, xmax = "au
   #Plotting with ggplot2
      ggplot2::ggplot(data.frame(x = c(0, xbound)), ggplot2::aes(x)) +
      #Left side area
-     ggplot2::stat_function(fun = area_range(density, 0, xbound), geom="area", fill=colorleft, n=precisionfactor) +
+     ggplot2::stat_function(fun = area_range(density, 0, xbound), geom="area", fill=colorleft, n=precisionfactor, na.rm = TRUE) +
      #Right side area
-     ggplot2::stat_function(fun = area_range(density, chisq, xbound), geom="area", fill=colorright, n=precisionfactor) +
+     ggplot2::stat_function(fun = area_range(density, chisq, xbound), geom="area", fill=colorright, n=precisionfactor, na.rm = TRUE) +
      #Left side curve
-     ggplot2::stat_function(fun = density, xlim = c(0,chisq), colour = colorleftcurve, n=precisionfactor, linewidth=curvelinesize) +
+     ggplot2::stat_function(fun = density, xlim = c(0,chisq), colour = colorleftcurve, n=precisionfactor, linewidth=curvelinesize, na.rm = TRUE) +
      #Right side curve
-     ggplot2::stat_function(fun = density, xlim = c(chisq,xbound), colour = colorrightcurve,linewidth=curvelinesize) +
+     ggplot2::stat_function(fun = density, xlim = c(chisq,xbound), colour = colorrightcurve,linewidth=curvelinesize, na.rm = TRUE) +
      #Define plotting area for extraspace (proportional to the max y plotted) below the graph to place chisquared label
      ggplot2::coord_cartesian(xlim=c(0,xbound),ylim=c(maxdensity*(-.08), maxdensity)) +
      #Cut line
@@ -214,7 +214,7 @@ plotchisqtest <- function(chisq, df = chisq$parameter, blank = FALSE, xmax = "au
      #Add the title
      ggplot2::ggtitle(title) +
      #Axis labels
-     ggplot2::labs(x=xlabel,y=ylabel, size = 10) +
+     ggplot2::labs(x=xlabel,y=ylabel) +
      #Apply black and white ggplot theme to avoid grey background, etc.
      ggplot2::theme_bw() +
      #Remove gridlines and pass fontfamily argument to ggplot2

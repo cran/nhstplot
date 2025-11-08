@@ -163,19 +163,19 @@ plotttest <- function(t, df, tails = "two", blank = FALSE, xmax = "auto", title 
   if (tails == "two") {
           ggplot2::ggplot(data.frame(x = c(-xbound*2, xbound*2)), ggplot2::aes(x)) +
           #Axis labels
-          ggplot2::labs(x=xlabel,y=ylabel, size = 10) +
+          ggplot2::labs(x=xlabel,y=ylabel) +
           #Middle area
-          ggplot2::stat_function(fun = area_range(density, -xbound, xbound), geom="area", fill=colormiddle, n=precisionfactor) +
+          ggplot2::stat_function(fun = area_range(density, -xbound, xbound), geom="area", fill=colormiddle, n=precisionfactor, na.rm = TRUE) +
           #Right side area
-          ggplot2::stat_function(fun = area_range(density, t, xbound), geom="area", fill=colorsides, n=precisionfactor) +
+          ggplot2::stat_function(fun = area_range(density, t, xbound), geom="area", fill=colorsides, n=precisionfactor, na.rm = TRUE) +
           #Left side area
-          ggplot2::stat_function(fun = area_range(density, -xbound, -t), geom="area", fill=colorsides, n=precisionfactor) +
+          ggplot2::stat_function(fun = area_range(density, -xbound, -t), geom="area", fill=colorsides, n=precisionfactor, na.rm = TRUE) +
           #Left side curve
-          ggplot2::stat_function(fun = density, xlim = c(-xbound,-t), colour = colorsidescurve,linewidth=curvelinesize,n=precisionfactor) +
+          ggplot2::stat_function(fun = density, xlim = c(-xbound,-t), colour = colorsidescurve,linewidth=curvelinesize,n=precisionfactor, na.rm = TRUE) +
           #Right side curve
-          ggplot2::stat_function(fun = density, xlim = c(t,xbound), colour = colorsidescurve,linewidth=curvelinesize,n=precisionfactor) +
+          ggplot2::stat_function(fun = density, xlim = c(t,xbound), colour = colorsidescurve,linewidth=curvelinesize,n=precisionfactor, na.rm = TRUE) +
           #middle curve
-          ggplot2::stat_function(fun = density, xlim = c(-t,t), colour = colormiddlecurve, n=precisionfactor, linewidth=curvelinesize) +
+          ggplot2::stat_function(fun = density, xlim = c(-t,t), colour = colormiddlecurve, n=precisionfactor, linewidth=curvelinesize, na.rm = TRUE) +
           #Define plotting area for extraspace below the graph to place t label
           ggplot2::coord_cartesian(xlim=c(-xbound,xbound),ylim=c(-.05, maxdensity)) +
           #Left cut line
@@ -220,13 +220,13 @@ plotttest <- function(t, df, tails = "two", blank = FALSE, xmax = "auto", title 
           #Axis labels
           ggplot2::labs(x=xlabel,y=ylabel, size=10) +
           #Left and middle area
-          ggplot2::stat_function(fun = area_range(density, -xbound, xbound), geom="area", fill=colormiddle, n=precisionfactor) +
+          ggplot2::stat_function(fun = area_range(density, -xbound, xbound), geom="area", fill=colormiddle, n=precisionfactor, na.rm = TRUE) +
           #Right side area
-          ggplot2::stat_function(fun = area_range(density, t, xbound), geom="area", fill=colorsides, n=precisionfactor) +
+          ggplot2::stat_function(fun = area_range(density, t, xbound), geom="area", fill=colorsides, n=precisionfactor, na.rm = TRUE) +
           #Left and middle curve
-          ggplot2::stat_function(fun = density, xlim = c(-xbound,t), colour = colormiddlecurve,linewidth = curvelinesize,n=precisionfactor) +
+          ggplot2::stat_function(fun = density, xlim = c(-xbound,t), colour = colormiddlecurve,linewidth = curvelinesize,n=precisionfactor, na.rm = TRUE) +
           #Right side curve
-          ggplot2::stat_function(fun = density, xlim = c(t,xbound), colour = colorsidescurve,linewidth = curvelinesize,n=precisionfactor) +
+          ggplot2::stat_function(fun = density, xlim = c(t,xbound), colour = colorsidescurve,linewidth = curvelinesize,n=precisionfactor, na.rm = TRUE) +
           #Define plotting area for extraspace below the graph to place t label
           ggplot2::coord_cartesian(xlim=c(-xbound,xbound),ylim=c(-.05, maxdensity)) +
           #Right cut line
@@ -257,15 +257,15 @@ plotttest <- function(t, df, tails = "two", blank = FALSE, xmax = "auto", title 
     #Plot left tailed t test plot
           ggplot2::ggplot(data.frame(x = c(-xbound*2, xbound*2)), ggplot2::aes(x)) +
           #Axis labels
-          ggplot2::labs(x=xlabel,y=ylabel, size=10) +
+          ggplot2::labs(x=xlabel,y=ylabel) +
           #Middle and right area
-          ggplot2::stat_function(fun = area_range(density, -xbound, xbound), geom="area", fill=colormiddle, n=precisionfactor) +
+          ggplot2::stat_function(fun = area_range(density, -xbound, xbound), geom="area", fill=colormiddle, n=precisionfactor, na.rm = TRUE) +
           #Left side area
-          ggplot2::stat_function(fun = area_range(density, -xbound, -t), geom="area", fill=colorsides, n=precisionfactor) +
+          ggplot2::stat_function(fun = area_range(density, -xbound, -t), geom="area", fill=colorsides, n=precisionfactor, na.rm = TRUE) +
           #Left side curve
-          ggplot2::stat_function(fun = density, xlim = c(-xbound,-t), colour = colorsidescurve,linewidth = curvelinesize,n=precisionfactor) +
+          ggplot2::stat_function(fun = density, xlim = c(-xbound,-t), colour = colorsidescurve,linewidth = curvelinesize,n=precisionfactor, na.rm = TRUE) +
           #Middle and right curve
-          ggplot2::stat_function(fun = density, xlim = c(-t,xbound), colour = colormiddlecurve, n=precisionfactor, linewidth = curvelinesize) +
+          ggplot2::stat_function(fun = density, xlim = c(-t,xbound), colour = colormiddlecurve, n=precisionfactor, linewidth = curvelinesize, na.rm = TRUE) +
           #Define plotting area for extraspace below the graph to place t label
           ggplot2::coord_cartesian(xlim=c(-xbound,xbound),ylim=c(-.05, maxdensity)) +
           #Left cut line

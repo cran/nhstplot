@@ -1,3 +1,6 @@
+# nhstplot 1.4.1
+- Fixed warnings caused by recent updates to `ggplot2`.
+
 # nhstplot 1.4.0
 - Improved error messages when passing invalid arguments to the plotting functions.
 - The `plotftest()` function now returns an error when the `anova()` does not contain exactly one test.
@@ -8,7 +11,7 @@
 - Fixing incompatibilities with the latest version of `ggplot2`.
 
 # nhstplot 1.2.0
-- You can now pass nested model comparisons ("F-change" tests, or Deviance/Likelihood Ratio Tests) F and chi-square tests created with the `anova()` directly for plotting (see vignette for examples).
+- You can now pass nested model comparisons ("F-change" tests, or Deviance/Likelihood Ratio Tests) F and chi-square tests created with `anova()` directly for plotting (see vignette for examples).
 - Code improvements and updates.
 
 # nhstplot 1.1.0
