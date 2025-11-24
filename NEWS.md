@@ -1,3 +1,6 @@
+# nhstplot 1.4.2
+- Fixed warnings caused by recent updates to `ggplot2`.
+
 # nhstplot 1.4.1
 - Fixed warnings caused by recent updates to `ggplot2`.
 

@@ -218,7 +218,7 @@ plotttest <- function(t, df, tails = "two", blank = FALSE, xmax = "auto", title 
     if (originalt > 0) {
           ggplot2::ggplot(data.frame(x = c(-xbound*2, xbound*2)), ggplot2::aes(x)) +
           #Axis labels
-          ggplot2::labs(x=xlabel,y=ylabel, size=10) +
+          ggplot2::labs(x=xlabel,y=ylabel) +
           #Left and middle area
           ggplot2::stat_function(fun = area_range(density, -xbound, xbound), geom="area", fill=colormiddle, n=precisionfactor, na.rm = TRUE) +
           #Right side area
@@ -230,7 +230,7 @@ plotttest <- function(t, df, tails = "two", blank = FALSE, xmax = "auto", title 
           #Define plotting area for extraspace below the graph to place t label
           ggplot2::coord_cartesian(xlim=c(-xbound,xbound),ylim=c(-.05, maxdensity)) +
           #Right cut line
-          ggplot2::geom_vline(xintercept = t, colour = colorcut, size = cutlinesize) +
+          ggplot2::geom_vline(xintercept = t, colour = colorcut, linewidth = cutlinesize) +
           #Right p label
           #ggplot2::geom_label(ggplot2::aes(x_plabel,y_plabel,label = plab), parse = T, fill = colorlabelfill, colour=colorplabel,family = fontfamily) +
           ggplot2::annotate(geom = "label", x = x_plabel, y = y_plabel, label = plab, parse = T, fill = colorlabelfill, colour=colorplabel,family = fontfamily) +
@@ -269,7 +269,7 @@ plotttest <- function(t, df, tails = "two", blank = FALSE, xmax = "auto", title 
           #Define plotting area for extraspace below the graph to place t label
           ggplot2::coord_cartesian(xlim=c(-xbound,xbound),ylim=c(-.05, maxdensity)) +
           #Left cut line
-          ggplot2::geom_vline(xintercept = -t, colour = colorcut, size = cutlinesize) +
+          ggplot2::geom_vline(xintercept = -t, colour = colorcut, linewidth = cutlinesize) +
           #Left p label
           #ggplot2::geom_label(ggplot2::aes(-x_plabel,y_plabel,label = plab), parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
           ggplot2::annotate(geom = "label", x = -x_plabel, y = y_plabel, label = plab, parse = T, fill = colorlabelfill, colour=colorplabel, family = fontfamily) +
